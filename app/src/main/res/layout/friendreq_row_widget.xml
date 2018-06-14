@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#ffffff"
+    android:id="@+id/friendReq_row_item"
+    android:orientation="horizontal">
+
+   <LinearLayout
+       android:layout_width="75dp"
+       android:layout_height="75dp"
+       android:background="#26a69a"
+       android:layout_margin="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:text="A"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="#fff"
+            android:id="@+id/widget_friendReqLetter_TV"
+            />
+   </LinearLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="sender name"
+        android:gravity="top"
+        android:layout_margin="5dp"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:id="@+id/widget_friendReqSender_TV"
+        />
+</LinearLayout>

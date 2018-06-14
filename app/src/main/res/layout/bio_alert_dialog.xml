@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Your Bio"
+            android:textColor="#fff"
+            android:layout_centerInParent="true"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#efebe9"
+        android:id="@+id/bioUpdate_ET"
+        android:hint="enter ypur new bio"
+        android:padding="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bioUpdate_BU"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="Update Bio"
+        android:textAllCaps="false"
+        android:textColor="#fff"/>
+
+</LinearLayout>
