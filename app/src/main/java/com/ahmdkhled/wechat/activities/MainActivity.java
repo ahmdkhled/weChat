@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MainPagerAdapter;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     TabLayout tabLayout;
+    FirebaseAnalytics firebaseAnalytics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(2);
 
-
+        firebaseAnalytics=FirebaseAnalytics.getInstance(this);
     }
 
 
