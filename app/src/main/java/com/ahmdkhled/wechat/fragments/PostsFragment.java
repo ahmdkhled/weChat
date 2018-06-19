@@ -49,7 +49,6 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
     private static final String POSTS_KEY = "posts_key";
 
     DatabaseReference root;
-    FirebaseUser currentUser;
     ArrayList<Post> postsList;
     RecyclerView postRecycler;
     PostsAdapter postsAdapter;
@@ -154,7 +153,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             Map<String,Object> postMap=new HashMap<>();
             postMap.put("content",post);
             postMap.put("date",-System.currentTimeMillis());
-            postMap.put("uid",currentUser.getUid());
+            postMap.put("uid",getCurrentUserUid());
             postRef.updateChildren(postMap)
             .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
