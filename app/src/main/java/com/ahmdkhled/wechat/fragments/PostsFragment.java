@@ -107,8 +107,9 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                                 Friend friend=data.getValue(Friend.class);
                                 String user1=friend.getUser1();
                                 String user2=friend.getUser2();
-                                if ( (user1.equals(post.getUid())&&user2.equals(getCurrentUserUid()))
-                                        ||(user1.equals(getCurrentUserUid())&&user2.equals(post.getUid()))){
+                                if (( (user1.equals(post.getUid())&&user2.equals(getCurrentUserUid()))
+                                        ||(user1.equals(getCurrentUserUid())&&user2.equals(post.getUid())))
+                                        ||post.getUid().equals(getCurrentUserUid())){
                                     DatabaseReference userRef=root.child("users").child(post.getUid());
                                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override

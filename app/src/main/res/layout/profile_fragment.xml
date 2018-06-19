@@ -101,21 +101,13 @@
                         android:id="@+id/addFriend_BU"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginRight="5dp"
+
                         android:background="#c62828"
                         android:text="Add"
                         android:textAllCaps="false"
                         android:textColor="#fff" />
 
-                    <Button
-                        android:id="@+id/message_BU"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="#c62828"
-                        android:text="  Message  "
-                        android:textAllCaps="false"
-                        android:textColor="#fff" />
+
 
                 </LinearLayout>
 

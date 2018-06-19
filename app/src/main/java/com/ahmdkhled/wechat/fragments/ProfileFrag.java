@@ -60,7 +60,7 @@ public class ProfileFrag extends Fragment {
     ImageView profileImg;
     TextView nameTV, bioTV;
     CardView addcontainer;
-    Button addBU,messageBU;
+    Button addBU;
     RecyclerView postRecycler;
     NestedScrollView scrollView;
     DatabaseReference root;
@@ -88,7 +88,6 @@ public class ProfileFrag extends Fragment {
         nameTV =v.findViewById(R.id.profileName_TV);
         bioTV =v.findViewById(R.id.profileBio_TV);
         addBU=v.findViewById(R.id.addFriend_BU);
-        messageBU=v.findViewById(R.id.message_BU);
         addcontainer=v.findViewById(R.id.addContainer);
         postRecycler=v.findViewById(R.id.userPostsRecycler);
         scrollView=v.findViewById(R.id.scroll);
