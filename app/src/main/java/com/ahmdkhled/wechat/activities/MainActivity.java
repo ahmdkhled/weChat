@@ -6,23 +6,27 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.ahmdkhled.wechat.utils.NotificationService;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MainPagerAdapter;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     TabLayout tabLayout;
     FirebaseAnalytics firebaseAnalytics;
+    FirebaseJobDispatcher jobDispatcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +43,21 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2);
 
         firebaseAnalytics=FirebaseAnalytics.getInstance(this);
+        startJob();
     }
 
+    public void startJob() {
+        jobDispatcher=new FirebaseJobDispatcher(new GooglePlayDriver(this));
+        Job job=jobDispatcher.newJobBuilder()
+                .setService(NotificationService.class)
+                .setTag("MYTAG")
+                .setTrigger(Trigger.executionWindow(12*3600,12*3600))
+                .setLifetime(Lifetime.FOREVER)
+                .setRecurring(true)
+                .build();
+
+        jobDispatcher.mustSchedule(job);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
