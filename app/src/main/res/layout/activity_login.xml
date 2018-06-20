@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/signup_bg"
         tools:context="com.ahmdkhled.wechat.activities.LoginActivity">
-
-
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -21,7 +16,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="60dp"
             android:fontFamily="casual"
-            android:text="We Chat"
+            android:text="@string/app_name"
             android:textColor="#fff"
             android:textSize="30dp"
             android:textStyle="bold"
@@ -45,21 +40,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:paddingTop="20dp"
-                android:text="Email" />
+                android:layout_marginEnd="30dp"
+                android:paddingTop="15dp"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:text="@string/email"
+                android:layout_marginRight="30dp" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/loginEmail_IL"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="#67869d"
+                >
 
                 <EditText
                     android:id="@+id/loginEmail_ET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="enter your email"
+                    android:hint="@string/enter_your_email"
+                    android:padding="5dp"
+                    android:background="@drawable/edittext_bg"
                     android:inputType="textEmailAddress"
                     android:textColor="#fff" />
             </android.support.design.widget.TextInputLayout>
@@ -73,7 +74,6 @@
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
             android:padding="5dp"
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loginEmailContainer">
 
@@ -83,19 +83,24 @@
                 android:layout_gravity="center"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:paddingTop="20dp"
-                android:text="Password" />
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:paddingTop="15dp"
+                android:text="@string/password" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/loginPass_IL">
+                android:id="@+id/loginPass_IL"
+                android:textColorHint="#67869d">
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="enter your password"
+                    android:hint="@string/enter_your_password"
                     android:textColor="#fff"
+                    android:padding="5dp"
+                    android:background="@drawable/edittext_bg"
                     android:inputType="textPassword"
                     android:id="@+id/loginPass_ET"/>
             </android.support.design.widget.TextInputLayout>
@@ -108,14 +113,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:background="@color/colorAccent"
-            android:text="LogIn"
+            android:background="@drawable/button_bg"
+            android:text="@string/login"
             android:textColor="#fff"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
 
@@ -123,12 +125,10 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="20dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingStart="20dp">
+            >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -137,15 +137,22 @@
                 android:textSize="20sp"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:text="don't have an account ? " />
+                android:textColor="#fff"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/don_t_have_an_account"
+                android:layout_marginEnd="5dp"
+                 />
 
             <Button
                 android:id="@+id/gotoSignup_BU"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:textColor="@color/colorAccent"
-                android:text="SignUp" />
+                android:gravity="left|center"
+                android:textColor="#d23c4f"
+                android:text="@string/signup" />
 
         </LinearLayout>
         

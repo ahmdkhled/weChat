@@ -64,7 +64,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profileImg_IV"
-                tools:text="Ahmed Khaled" />
+                tools:text="@string/ahmedkhaled" />
 
 
             <TextView
@@ -76,7 +76,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profileName_TV"
-                tools:text="hello world" />
+                tools:text="@string/helloworld" />
 
 
             <android.support.v7.widget.CardView
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
 
                         android:background="#c62828"
-                        android:text="Add"
+                        android:text="@string/add"
                         android:textAllCaps="false"
                         android:textColor="#fff" />
 

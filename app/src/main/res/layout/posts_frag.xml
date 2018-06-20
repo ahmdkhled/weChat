@@ -40,7 +40,7 @@
                 android:id="@+id/writePostContent_ET"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="write a psost ...."
+                android:hint="@string/write_a_psost"
                 android:layout_marginTop="8dp"
                 android:paddingRight="10dp"
                 android:layout_marginLeft="10dp"

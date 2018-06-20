@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:text="A"
+            tools:text="@string/a"
             android:gravity="center"
             android:textSize="25sp"
             android:textAllCaps="true"
@@ -30,7 +30,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="sender name"
+        tools:text="@string/sender_name"
         android:gravity="top"
         android:layout_margin="5dp"
         android:textColor="#000"

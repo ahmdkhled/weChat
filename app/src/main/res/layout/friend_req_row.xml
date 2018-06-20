@@ -33,7 +33,7 @@
                 android:textSize="25sp"
                 app:layout_constraintStart_toEndOf="@+id/friendReqImg_IV"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="ahmed Khaled"
+                tools:text="@string/ahmedkhaled"
                 android:textColor="#212121"
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp" />
@@ -52,7 +52,7 @@
                 android:textColor="#fff"
                 android:textAllCaps="false"
                 android:textStyle="bold"
-                android:text="Accept"/>
+                android:text="@string/accept"/>
 
 
 

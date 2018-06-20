@@ -1,4 +1,25 @@
 <resources>
     <string name="app_name">WeChat</string>
     <string name="adunit_id">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="don_t_have_an_account">don\'t have an account ?</string>
+    <string name="signup">SignUp</string>
+    <string name="login">LogIn</string>
+    <string name="email">Email</string>
+    <string name="enter_your_email">enter your email</string>
+    <string name="password">Password</string>
+    <string name="enter_your_password">enter your password</string>
+    <string name="alredy_have_an_account">alredy have an account</string>
+    <string name="enter_your_name">enter your name</string>
+    <string name="full_name">full name</string>
+    <string name="ahmedkhaled">Ahmed Khaled</string>
+    <string name="helloworld">hello world</string>
+    <string name="add">Add</string>
+    <string name="write_a_psost">write a psost ....</string>
+    <string name="thisisasamplepost">this is a sample post</string>
+    <string name="sender_name">sender name</string>
+    <string name="a">A</string>
+    <string name="accept">Accept</string>
+    <string name="update_bio">Update Bio</string>
+    <string name="enter_your_new_bio">enter your new bio</string>
+    <string name="edit_your_bio">Edit Your Bio</string>
 </resources>

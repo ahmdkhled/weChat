@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Your Bio"
+            android:text="@string/edit_your_bio"
             android:textColor="#fff"
             android:layout_centerInParent="true"
             android:textStyle="bold"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:background="#efebe9"
         android:id="@+id/bioUpdate_ET"
-        android:hint="enter ypur new bio"
+        android:hint="@string/enter_your_new_bio"
         android:padding="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
@@ -40,7 +40,7 @@
         android:background="@color/colorPrimary"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:text="Update Bio"
+        android:text="@string/update_bio"
         android:textAllCaps="false"
         android:textColor="#fff"/>
 
