@@ -3,6 +3,7 @@ package com.ahmdkhled.wechat.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,7 +47,6 @@ import java.util.Map;
 
 public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicked{
 
-    private static final String POSTS_KEY = "posts_key";
 
     DatabaseReference root;
     ArrayList<Post> postsList;
@@ -54,6 +54,8 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
     PostsAdapter postsAdapter;
     ImageView writePost,userImage;
     EditText postContent_ET;
+    private final String  POSITION_KEY="POS_KEY";
+    int pos=0;
 
     @Nullable
     @Override
@@ -71,6 +73,10 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                 uploadPost();
             }
         });
+
+        if (savedInstanceState!=null){
+            pos=savedInstanceState.getInt(POSITION_KEY);
+        }
         fetchData();
 
         return v;
@@ -99,6 +105,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                 postsList.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
                     final Post post=data.getValue(Post.class);
+                    Log.d("TAGPOSTT",""+post.getContent());
                     DatabaseReference friendsRef=root.child("friends");
                     friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -107,18 +114,21 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                                 Friend friend=data.getValue(Friend.class);
                                 String user1=friend.getUser1();
                                 String user2=friend.getUser2();
-                                if (( (user1.equals(post.getUid())&&user2.equals(getCurrentUserUid()))
-                                        ||(user1.equals(getCurrentUserUid())&&user2.equals(post.getUid())))
-                                        ||post.getUid().equals(getCurrentUserUid())){
+                                if ( ( (user1.equals(post.getUid())&&user2.equals(getCurrentUserUid()))
+                                        ||(user1.equals(getCurrentUserUid())&&user2.equals(post.getUid())))){
+                                    Log.d("TAGPOSTT","->>-"+post.getContent()+"->>-");
                                     DatabaseReference userRef=root.child("users").child(post.getUid());
                                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Log.d("TAGPOSTT","--"+post.getContent()+"--");
                                             User user=dataSnapshot.getValue(User.class);
                                             user.setUid(dataSnapshot.getKey());
                                             post.setUser(user);
                                             postsList.add(post);
                                             postsAdapter.notifyDataSetChanged();
+                                            postRecycler.scrollToPosition(pos);
+
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {}
@@ -175,10 +185,23 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
     }
     }
 
-    void showPosts(ArrayList<Post> posts){
+    void showPosts(final ArrayList<Post> posts){
         postsAdapter=new PostsAdapter(getContext(),posts,this);
         postRecycler.setAdapter(postsAdapter);
         postRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+
+                Log.d("POSSS","pos "+pos);
+                //postRecycler.scrollToPosition(pos);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        pos=((LinearLayoutManager)postRecycler.getLayoutManager()).findFirstVisibleItemPosition();
+        outState.putInt(POSITION_KEY,pos);
+        int pos2=postRecycler.getScrollY();
+        Log.d("POSSS","onsave pos "+pos2);
+
     }
 
     void hideSoftKeyboard(Activity activity) {

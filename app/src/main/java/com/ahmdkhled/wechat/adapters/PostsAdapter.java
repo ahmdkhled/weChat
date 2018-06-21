@@ -262,6 +262,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
 
+
     private void loadAd(final RecyclerView.ViewHolder holder){
         AdLoader adLoader=new AdLoader.Builder(context,adUnitId)
                 .forContentAd(new NativeContentAd.OnContentAdLoadedListener() {

@@ -49,6 +49,8 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
     RecyclerView friendReqRecycler;
     FriendReqAdapter friendReqAdapter;
     Prefs prefs;
+    private final String  POSITION_KEY="POS_KEY";
+    int pos=0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,7 +59,11 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
         reqSendersList =new ArrayList<>();
         friendReqRecycler=v.findViewById(R.id.friendReqRecycler);
         prefs=new Prefs(getContext());
-        Log.d("VIEWPAGER","friend request");
+
+        if (savedInstanceState!=null){
+            pos=savedInstanceState.getInt(POSITION_KEY);
+        }
+
         fetchData();
 
 
@@ -95,6 +101,7 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
                                 prefs.saveData(reqSendersList);
                                 updateWidget();
                                 friendReqAdapter.notifyDataSetChanged();
+                                friendReqRecycler.scrollToPosition(pos);
                             }
 
                             @Override
@@ -121,6 +128,14 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
         intent.putExtra(ProfileActivity.PROFILEUID_TAG,uid);
         if (getContext()!=null)
             getContext().startActivity(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        pos=((LinearLayoutManager)friendReqRecycler.getLayoutManager()).findFirstVisibleItemPosition();
+        outState.putInt(POSITION_KEY,pos);
+        Log.d("POSSS","onsave pos "+pos);
     }
 
     void updateWidget(){

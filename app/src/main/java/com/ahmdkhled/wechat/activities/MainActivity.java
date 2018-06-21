@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId()==R.id.logOut){
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(),SignupActivity.class));
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

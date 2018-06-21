@@ -71,14 +71,14 @@ public class ProfileFrag extends Fragment {
     String uid;
     int friendshiip_state=-2;
     boolean isMyProfile=true;
-    public static final String POSTS_KEY="posts_key";
-    public static final String User_KEY="user_key";
     private int STORAGE_PERMISSION_CODE=44;
     private final int PICK_IMAGE_CODE=23;
     private static final int ACCEPT_STATE=2;
     private static final int ADD_STATE=1;
     private static final int CANCEL_REQUEST_STATE=4;
     private static final int FRIENDS_STATE=3;
+    private final String  POSITION_KEY="POSS_KEY";
+    int pos=-10;
 
     @Nullable
     @Override
@@ -114,6 +114,9 @@ public class ProfileFrag extends Fragment {
             addcontainer.setVisibility(View.INVISIBLE);
             bioTV.setEnabled(true);
             profileImg.setEnabled(true);
+        }
+        if (savedInstanceState!=null){
+            pos=savedInstanceState.getInt(POSITION_KEY,-20);
         }
 
         addBU.setEnabled(false);
@@ -201,6 +204,8 @@ public class ProfileFrag extends Fragment {
                                 User user=dataSnapshot.getValue(User.class);
                                 post.setUser(user);
                                 postsAdapter.notifyDataSetChanged();
+                                Log.d("POSSSPRF","on restore pos "+pos);
+                                postRecycler.scrollToPosition(pos);
                             }
 
                             @Override
@@ -319,6 +324,14 @@ public class ProfileFrag extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        pos=((LinearLayoutManager)postRecycler.getLayoutManager()).findFirstVisibleItemPosition();
+        Log.d("POSSSPRF","onsave pos "+pos);
+        outState.putInt(POSITION_KEY,pos);
+    }
+
     void showPosts(ArrayList<Post> posts){
         postsAdapter=new PostsAdapter(getContext(),posts);
         postRecycler.setAdapter(postsAdapter);
@@ -330,7 +343,7 @@ public class ProfileFrag extends Fragment {
 
     }
 
-    String getUserUid(){
+    private String getUserUid(){
         FirebaseUser currentUser= FirebaseAuth.getInstance().getCurrentUser();
         return currentUser.getUid();
     }
