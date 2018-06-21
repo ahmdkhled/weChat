@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -62,7 +64,6 @@ public class ProfileFrag extends Fragment {
     CardView addcontainer;
     Button addBU;
     RecyclerView postRecycler;
-    NestedScrollView scrollView;
     DatabaseReference root;
     FirebaseUser currentuser;
     User user;
@@ -78,7 +79,9 @@ public class ProfileFrag extends Fragment {
     private static final int CANCEL_REQUEST_STATE=4;
     private static final int FRIENDS_STATE=3;
     private final String  POSITION_KEY="POSS_KEY";
-    int pos=-10;
+    int pos=-0;
+
+    AppBarLayout appBarLayout;
 
     @Nullable
     @Override
@@ -90,10 +93,11 @@ public class ProfileFrag extends Fragment {
         addBU=v.findViewById(R.id.addFriend_BU);
         addcontainer=v.findViewById(R.id.addContainer);
         postRecycler=v.findViewById(R.id.userPostsRecycler);
-        scrollView=v.findViewById(R.id.scroll);
+        appBarLayout=v.findViewById(R.id.appBarLayout);
         postsList=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().getRoot();
         currentuser= FirebaseAuth.getInstance().getCurrentUser();
+
 
 
         Bundle b=getArguments();
@@ -117,6 +121,7 @@ public class ProfileFrag extends Fragment {
         }
         if (savedInstanceState!=null){
             pos=savedInstanceState.getInt(POSITION_KEY,-20);
+            appBarLayout.setExpanded(false);
         }
 
         addBU.setEnabled(false);
@@ -336,10 +341,7 @@ public class ProfileFrag extends Fragment {
         postsAdapter=new PostsAdapter(getContext(),posts);
         postRecycler.setAdapter(postsAdapter);
         postRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (postRecycler.getAdapter().getItemCount()==0){
-            Toast.makeText(getContext(),"zero",Toast.LENGTH_SHORT).show();
-            ViewCompat.setNestedScrollingEnabled(scrollView,false);
-        }
+        postRecycler.scrollToPosition(pos);
 
     }
 
