@@ -2,7 +2,7 @@ package com.ahmdkhled.wechat.fragments;
 
 
 import android.Manifest;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,14 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ahmdkhled.wechat.activities.MainActivity;
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.PostsAdapter;
@@ -74,6 +67,7 @@ public class ProfileFrag extends Fragment{
     TextView nameTV, bioTV;
     CardView addcontainer;
     Button addBU;
+    ProgressDialog progressDialog;
     RecyclerView postRecycler;
     DatabaseReference root;
     FirebaseUser currentuser;
@@ -83,7 +77,6 @@ public class ProfileFrag extends Fragment{
     String uid;
     int friendshiip_state=-2;
     boolean isMyProfile=true;
-    CoordinatorLayout snackBarcontainer;
     private int STORAGE_PERMISSION_CODE=44;
     private final int PICK_IMAGE_CODE=23;
     private static final int ACCEPT_STATE=2;
@@ -105,8 +98,7 @@ public class ProfileFrag extends Fragment{
         addcontainer=v.findViewById(R.id.addContainer);
         postRecycler=v.findViewById(R.id.userPostsRecycler);
         appBarLayout=v.findViewById(R.id.appBarLayout);
-        snackBarcontainer=v.findViewById(R.id.profileFragContainer);
-
+        progressDialog =new ProgressDialog(getContext());
         postsList=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().getRoot();
         currentuser= FirebaseAuth.getInstance().getCurrentUser();
@@ -497,6 +489,7 @@ public class ProfileFrag extends Fragment{
     }
 
     void uploadprofileImg(final Uri imageUri){
+        showDialog();
         final StorageReference storageRef=FirebaseStorage.getInstance().getReference();
         storageRef.child("profileImages/"+uid).putFile(imageUri)
                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -513,6 +506,7 @@ public class ProfileFrag extends Fragment{
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()){
                                         profileImg.setImageURI(imageUri);
+                                        progressDialog.dismiss();
                                         Toast.makeText(getContext(),"profile image updated",Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -532,7 +526,6 @@ public class ProfileFrag extends Fragment{
                 Toast.makeText(getContext(),"failed to update photo ",Toast.LENGTH_SHORT).show();
             }
         });
-        //storage.putFile("");
     }
 
     void pickImage(){
@@ -573,4 +566,11 @@ public class ProfileFrag extends Fragment{
         }
     }
 
+    void showDialog(){
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle("uploading your profile image");
+        progressDialog.show();
+    }
 }
