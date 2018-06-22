@@ -1,13 +1,18 @@
 package com.ahmdkhled.wechat.activities;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import com.ahmdkhled.wechat.fragments.ConnectivityEvent;
+import com.ahmdkhled.wechat.utils.Connection;
 import com.ahmdkhled.wechat.utils.NotificationService;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MainPagerAdapter;
@@ -19,6 +24,8 @@ import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,7 +51,28 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseAnalytics=FirebaseAnalytics.getInstance(this);
         startJob();
+
+        if (!Connection.isConnected(this)){
+            showSnackBar();
+        }
     }
+    void showSnackBar(){
+        Snackbar snackbar=Snackbar.make(findViewById(R.id.activityMainContainer)
+                ,"there is no Connection ",Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Retry", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Connection.isConnected(getApplicationContext())){
+                    EventBus.getDefault().post(new ConnectivityEvent());
+                }else {
+                    showSnackBar();
+                }
+            }
+        });
+        snackbar.show();
+    }
+
+
 
     public void startJob() {
         jobDispatcher=new FirebaseJobDispatcher(new GooglePlayDriver(this));
@@ -74,4 +102,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

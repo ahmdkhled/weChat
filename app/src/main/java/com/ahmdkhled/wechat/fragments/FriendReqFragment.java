@@ -2,7 +2,6 @@ package com.ahmdkhled.wechat.fragments;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +20,7 @@ import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.adapters.FriendReqAdapter;
 import com.ahmdkhled.wechat.model.FriendReq;
 import com.ahmdkhled.wechat.model.User;
+import com.ahmdkhled.wechat.utils.Connection;
 import com.ahmdkhled.wechat.utils.Prefs;
 import com.ahmdkhled.wechat.widget.WidgetProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +33,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +52,7 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
     ArrayList<String> reqSendersList;
     RecyclerView friendReqRecycler;
     FriendReqAdapter friendReqAdapter;
+
     Prefs prefs;
     private final String  POSITION_KEY="POS_KEY";
     int pos=0;
@@ -58,15 +63,19 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
         friendReqList =new ArrayList<>();
         reqSendersList =new ArrayList<>();
         friendReqRecycler=v.findViewById(R.id.friendReqRecycler);
+
         prefs=new Prefs(getContext());
 
         if (savedInstanceState!=null){
             pos=savedInstanceState.getInt(POSITION_KEY);
         }
 
-        fetchData();
-
-
+        if (savedInstanceState!=null){
+            pos=savedInstanceState.getInt(POSITION_KEY);
+        }
+        if (Connection.isConnected(getContext())){
+            fetchData();
+        }
         return v;
     }
 
@@ -130,6 +139,23 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
             getContext().startActivity(intent);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ConnectivityEvent event) {
+        fetchData();
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this))
+        EventBus.getDefault().register(this);
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -137,6 +163,7 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
         outState.putInt(POSITION_KEY,pos);
         Log.d("POSSS","onsave pos "+pos);
     }
+
 
     void updateWidget(){
         if (getContext()!=null) {
@@ -203,6 +230,7 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
         showProfile(uid);
 
     }
+
 
 
 }

@@ -3,7 +3,6 @@ package com.ahmdkhled.wechat.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +23,7 @@ import com.ahmdkhled.wechat.adapters.PostsAdapter;
 import com.ahmdkhled.wechat.model.Friend;
 import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
+import com.ahmdkhled.wechat.utils.Connection;
 import com.ahmdkhled.wechat.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +37,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +50,6 @@ import java.util.Map;
  */
 
 public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicked{
-
 
     DatabaseReference root;
     ArrayList<Post> postsList;
@@ -74,10 +77,13 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             }
         });
 
+
         if (savedInstanceState!=null){
             pos=savedInstanceState.getInt(POSITION_KEY);
         }
-        fetchData();
+        if (Connection.isConnected(getContext())){
+            fetchData();
+        }
 
         return v;
     }
@@ -185,6 +191,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
     }
     }
 
+
     void showPosts(final ArrayList<Post> posts){
         postsAdapter=new PostsAdapter(getContext(),posts,this);
         postRecycler.setAdapter(postsAdapter);
@@ -203,6 +210,11 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
         Log.d("POSSS","onsave pos "+pos2);
 
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ConnectivityEvent event) {
+        fetchData();
+    };
 
     void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
@@ -226,6 +238,19 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
         if (getContext()!=null)
         getContext().startActivity(intent);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

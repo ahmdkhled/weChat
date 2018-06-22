@@ -2,6 +2,7 @@ package com.ahmdkhled.wechat.fragments;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -28,12 +32,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ahmdkhled.wechat.activities.MainActivity;
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.PostsAdapter;
 import com.ahmdkhled.wechat.model.Friend;
 import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
+import com.ahmdkhled.wechat.utils.Connection;
 import com.ahmdkhled.wechat.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,6 +57,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +69,7 @@ import java.util.Map;
  * Created by Ahmed Khaled on 6/2/2018.
  */
 
-public class ProfileFrag extends Fragment {
+public class ProfileFrag extends Fragment{
     ImageView profileImg;
     TextView nameTV, bioTV;
     CardView addcontainer;
@@ -72,6 +83,7 @@ public class ProfileFrag extends Fragment {
     String uid;
     int friendshiip_state=-2;
     boolean isMyProfile=true;
+    CoordinatorLayout snackBarcontainer;
     private int STORAGE_PERMISSION_CODE=44;
     private final int PICK_IMAGE_CODE=23;
     private static final int ACCEPT_STATE=2;
@@ -79,8 +91,7 @@ public class ProfileFrag extends Fragment {
     private static final int CANCEL_REQUEST_STATE=4;
     private static final int FRIENDS_STATE=3;
     private final String  POSITION_KEY="POSS_KEY";
-    int pos=-0;
-
+    int pos=0;
     AppBarLayout appBarLayout;
 
     @Nullable
@@ -94,6 +105,8 @@ public class ProfileFrag extends Fragment {
         addcontainer=v.findViewById(R.id.addContainer);
         postRecycler=v.findViewById(R.id.userPostsRecycler);
         appBarLayout=v.findViewById(R.id.appBarLayout);
+        snackBarcontainer=v.findViewById(R.id.profileFragContainer);
+
         postsList=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().getRoot();
         currentuser= FirebaseAuth.getInstance().getCurrentUser();
@@ -127,8 +140,15 @@ public class ProfileFrag extends Fragment {
         addBU.setEnabled(false);
         addBU.setText("....");
 
+        if (savedInstanceState!=null){
+            pos=savedInstanceState.getInt(POSITION_KEY);
+        }
+        if (Connection.isConnected(getContext())){
             handleAddButton();
             fetchData(uid);
+        }
+
+
 
 
         bioTV.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +197,12 @@ public class ProfileFrag extends Fragment {
             }
         });
 
+
+
+        return v;
+    }
+
+    void fetchData(final String userUid){
         DatabaseReference userRef=root.child("users").child(uid);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -188,10 +214,6 @@ public class ProfileFrag extends Fragment {
             public void onCancelled(DatabaseError databaseError) {}
         });
 
-        return v;
-    }
-
-    void fetchData(final String userUid){
         DatabaseReference postsRef=root.child("posts");
         postsRef.orderByChild("date").addValueEventListener(new ValueEventListener() {
             @Override
@@ -295,6 +317,25 @@ public class ProfileFrag extends Fragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ConnectivityEvent event) {
+        handleAddButton();
+        fetchData(uid);
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -313,7 +354,6 @@ public class ProfileFrag extends Fragment {
             }
         }
     }
-
 
     void populateData(User user){
         if (Utils.isEmpty(user.getProfileImg())){
