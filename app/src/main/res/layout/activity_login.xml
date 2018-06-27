@@ -150,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:textColor="#d23c4f"
                 android:text="@string/signup" />
 

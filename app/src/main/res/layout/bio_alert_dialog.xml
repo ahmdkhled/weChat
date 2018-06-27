@@ -28,8 +28,8 @@
         android:hint="@string/enter_your_new_bio"
         android:padding="5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"/>
 
 
     <Button

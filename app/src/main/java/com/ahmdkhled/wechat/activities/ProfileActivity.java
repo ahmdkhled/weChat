@@ -9,27 +9,28 @@ import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.fragments.ProfileFrag;
 
 public class ProfileActivity extends AppCompatActivity {
-    private static final String PROFILEFRAG_TAG = "profile_frag";
-    public static final String PROFILEUID_TAG = "profile_uid";
+    public static final String PROFILE_UID_TAG="profile_uid";
+    private final String profile_frag_tag="profile_frag_tag";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         Intent intent=getIntent();
-        if (intent!=null&&intent.hasExtra(PROFILEUID_TAG)){
-            showProfile(intent.getStringExtra(PROFILEUID_TAG));
+        if (intent!=null&&intent.hasExtra(PROFILE_UID_TAG)){
+            showProfile(intent.getStringExtra(PROFILE_UID_TAG));
         }
     }
 
     void showProfile(String uid){
         ProfileFrag profileFrag=new ProfileFrag();
         Bundle bundle=new Bundle();
-        bundle.putString(PROFILEUID_TAG,uid);
+        bundle.putString(PROFILE_UID_TAG,uid);
         profileFrag.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.profile_activity,profileFrag,PROFILEFRAG_TAG)
+                .add(R.id.profile_activity,profileFrag,profile_frag_tag)
                 .commit();
     }
 }

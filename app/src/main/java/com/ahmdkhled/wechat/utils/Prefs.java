@@ -3,6 +3,7 @@ package com.ahmdkhled.wechat.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.model.FriendReq;
 import com.ahmdkhled.wechat.model.User;
 
@@ -15,8 +16,8 @@ import java.util.Set;
  */
 
 public class Prefs {
-    public static final String FRIEND_REQUEST_KEY="friend_req";
     private Context context;
+    private String FRIEND_REQUEST_KEY="friend_reqq";
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     public Prefs(Context context){

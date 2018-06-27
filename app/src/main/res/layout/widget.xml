@@ -15,7 +15,7 @@
             android:textStyle="bold"
             android:fontFamily="cursive"
             android:textSize="20sp"
-            android:text="Friend Requests"/>
+            android:text="@string/friend_requests"/>
 
     <ListView
         android:layout_width="match_parent"

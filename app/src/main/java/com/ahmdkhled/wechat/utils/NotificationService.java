@@ -27,7 +27,7 @@ public class NotificationService extends JobService{
         NotificationCompat.Builder nBuilder=new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID);
 
         nBuilder.setSmallIcon(R.drawable.ic_launcher_background);
-        nBuilder.setContentText("hey!! write a post now and share it with your friends");
+        nBuilder.setContentText(getString(R.string.notification_body));
         nBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         PendingIntent pendingIntent=PendingIntent.getActivity(getApplicationContext(),222,
@@ -48,7 +48,7 @@ public class NotificationService extends JobService{
 
     private void createNotificationChannel(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel=new NotificationChannel(CHANNEL_ID,"reminder notification channel"
+            NotificationChannel notificationChannel=new NotificationChannel(CHANNEL_ID,getString(R.string.notification_channel)
                     ,NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager= getNotificationManager();
             if (notificationManager != null) {

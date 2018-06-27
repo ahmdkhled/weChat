@@ -1,7 +1,10 @@
 package com.ahmdkhled.wechat.utils;
 
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
+
+import com.ahmdkhled.wechat.R;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
@@ -18,14 +21,15 @@ import javax.crypto.spec.SecretKeySpec;
 public class Encryption {
 
     private static final String ALGORITHM = "AES";
+    private static final String UNICODE = "utf-8";
 
-    public static String encrypt(String UID,String value)
+    public static String encrypt(String UID, String value)
     {
         try {
         Key key = generateKey(getKeyFromUID(UID));
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte [] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
+        byte [] encryptedByteValue = cipher.doFinal(value.getBytes(UNICODE));
         String encryptedValue64 = Base64.encodeToString(encryptedByteValue, Base64.DEFAULT);
         return encryptedValue64;
 
@@ -45,7 +49,7 @@ public class Encryption {
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] decryptedValue64 = Base64.decode(value, Base64.DEFAULT);
         byte [] decryptedByteValue = cipher.doFinal(decryptedValue64);
-        String decryptedValue = new String(decryptedByteValue,"utf-8");
+        String decryptedValue = new String(decryptedByteValue,UNICODE);
         return decryptedValue;
         }catch (Exception e) {
             e.printStackTrace();
@@ -57,11 +61,10 @@ public class Encryption {
 
     private static Key generateKey(String KEY)
     {
-        Key key = new SecretKeySpec(KEY.getBytes(),ALGORITHM);
-        return key;
+        return new SecretKeySpec(KEY.getBytes(),ALGORITHM);
     }
 
-    public static String getKeyFromUID(String uid){
+    private static String getKeyFromUID(String uid){
         return uid.substring(0,16);
     }
 

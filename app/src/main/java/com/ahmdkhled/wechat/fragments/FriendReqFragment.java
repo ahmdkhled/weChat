@@ -52,9 +52,9 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
     ArrayList<String> reqSendersList;
     RecyclerView friendReqRecycler;
     FriendReqAdapter friendReqAdapter;
-
     Prefs prefs;
-    private final String  POSITION_KEY="POS_KEY";
+    public static final String POS_KEY="fr_pos_key";
+
     int pos=0;
     @Nullable
     @Override
@@ -67,12 +67,9 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
         prefs=new Prefs(getContext());
 
         if (savedInstanceState!=null){
-            pos=savedInstanceState.getInt(POSITION_KEY);
+            pos=savedInstanceState.getInt(POS_KEY);
         }
 
-        if (savedInstanceState!=null){
-            pos=savedInstanceState.getInt(POSITION_KEY);
-        }
         if (Connection.isConnected(getContext())){
             fetchData();
         }
@@ -118,7 +115,6 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
                             }
                         });
                 }
-                Log.d("FRIII", "finished");
                 showData(friendReqList);
             }
             @Override
@@ -134,7 +130,7 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
 
     void showProfile(String uid){
         Intent intent=new Intent(getContext(), ProfileActivity.class);
-        intent.putExtra(ProfileActivity.PROFILEUID_TAG,uid);
+        intent.putExtra(ProfileActivity.PROFILE_UID_TAG,uid);
         if (getContext()!=null)
             getContext().startActivity(intent);
     }
@@ -160,14 +156,13 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         pos=((LinearLayoutManager)friendReqRecycler.getLayoutManager()).findFirstVisibleItemPosition();
-        outState.putInt(POSITION_KEY,pos);
+        outState.putInt(POS_KEY,pos);
         Log.d("POSSS","onsave pos "+pos);
     }
 
 
     void updateWidget(){
         if (getContext()!=null) {
-            Log.d("WIDGETT","update widget ");
             Intent intent = new Intent(getContext(), WidgetProvider.class);
             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             int[] ids = AppWidgetManager.getInstance(getContext())
@@ -202,7 +197,9 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
                                     if (task.isSuccessful()){
                                         //reqSendersList.remove(friendReqList.get(position).getUser().getName());
                                         //updateWidget();
-                                        Toast.makeText(getContext(),"you are friends now ",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(),R.string.your_are_friends_now
+                                                ,Toast.LENGTH_SHORT).show();
+                                        EventBus.getDefault().post(new FRAcceptEvent());
                                     }
                                 }
                             });
@@ -212,7 +209,7 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(),"failed to accept",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),R.string.failed_to_accept_request,Toast.LENGTH_SHORT).show();
 
             }
         });

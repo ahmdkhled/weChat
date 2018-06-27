@@ -53,11 +53,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         this.onPostCLicked = onPostCLicked;
         adUnitId=context.getResources().getString(R.string.adunit_id);
     }
-    public PostsAdapter(Context context,ArrayList<Post> posts) {
-        this.posts = posts;
-        this.context = context;
-        adUnitId=context.getResources().getString(R.string.adunit_id);
-    }
+
 
     @NonNull
     @Override
@@ -77,11 +73,11 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         if (getItemViewType(position)==POSTS_TYPE){
             PostHolder postHolder= (PostHolder) holder;
             int pos=mapPostition(position);
+            Log.d("POSSSM","position "+position+" >>> "+pos);
             postHolder.populateData(pos);
         }else{
             loadAd(holder);
         }
-
     }
 
     @Override
@@ -290,7 +286,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     }
                 }).build();
 
-        adLoader.loadAd(new AdRequest.Builder().addTestDevice("B1A716991CB63A3ED7AE22397DD5E718").build());
+        adLoader.loadAd(new AdRequest.Builder().addTestDevice(context.getString(R.string.test_device_hash)).build());
     }
 
     public interface OnPostCLicked{

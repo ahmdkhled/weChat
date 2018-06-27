@@ -57,8 +57,8 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
     PostsAdapter postsAdapter;
     ImageView writePost,userImage;
     EditText postContent_ET;
-    private final String  POSITION_KEY="POS_KEY";
     int pos=0;
+    private static final String POS_KEY="pos_key";
 
     @Nullable
     @Override
@@ -77,9 +77,10 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             }
         });
 
+        Log.d("MLIFJIFF",System.currentTimeMillis()+"");
 
         if (savedInstanceState!=null){
-            pos=savedInstanceState.getInt(POSITION_KEY);
+            pos=savedInstanceState.getInt(POS_KEY);
         }
         if (Connection.isConnected(getContext())){
             fetchData();
@@ -93,12 +94,14 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             userRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    String profileImg=dataSnapshot.child("profileImg").getValue(String.class);
-                    if (!Utils.isEmpty(profileImg)){
-                        Glide.with(getContext()).load(profileImg).into(userImage);
-                    }else {
-                        userImage.setImageResource(R.drawable.user);
-                    }
+                        String profileImg = dataSnapshot.child("profileImg").getValue(String.class);
+                        if (!Utils.isEmpty(profileImg)) {
+                            if (getContext() != null)
+                                Glide.with(getContext()).load(profileImg).into(userImage);
+                        } else {
+                            userImage.setImageResource(R.drawable.user);
+                        }
+
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}
@@ -109,26 +112,23 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 postsList.clear();
-                for (DataSnapshot data:dataSnapshot.getChildren()){
-                    final Post post=data.getValue(Post.class);
-                    Log.d("TAGPOSTT",""+post.getContent());
-                    DatabaseReference friendsRef=root.child("friends");
+                for (DataSnapshot data:dataSnapshot.getChildren()) {
+                    final Post post = data.getValue(Post.class);
+                    DatabaseReference friendsRef = root.child("friends");
                     friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot data:dataSnapshot.getChildren()){
-                                Friend friend=data.getValue(Friend.class);
-                                String user1=friend.getUser1();
-                                String user2=friend.getUser2();
-                                if ( ( (user1.equals(post.getUid())&&user2.equals(getCurrentUserUid()))
-                                        ||(user1.equals(getCurrentUserUid())&&user2.equals(post.getUid())))){
-                                    Log.d("TAGPOSTT","->>-"+post.getContent()+"->>-");
-                                    DatabaseReference userRef=root.child("users").child(post.getUid());
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                Friend friend = data.getValue(Friend.class);
+                                String user1 = friend.getUser1();
+                                String user2 = friend.getUser2();
+                                if (((user1.equals(post.getUid()) && user2.equals(getCurrentUserUid()))
+                                        || (user1.equals(getCurrentUserUid()) && user2.equals(post.getUid())))) {
+                                    DatabaseReference userRef = root.child("users").child(post.getUid());
                                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Log.d("TAGPOSTT","--"+post.getContent()+"--");
-                                            User user=dataSnapshot.getValue(User.class);
+                                            User user = dataSnapshot.getValue(User.class);
                                             user.setUid(dataSnapshot.getKey());
                                             post.setUser(user);
                                             postsList.add(post);
@@ -136,21 +136,28 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                                             postRecycler.scrollToPosition(pos);
 
                                         }
+
                                         @Override
-                                        public void onCancelled(DatabaseError databaseError) {}
+                                        public void onCancelled(DatabaseError databaseError) {
+                                        }
                                     });
                                     break;
                                 }
                             }
+
                         }
+
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {}
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
                     });
+
                 }
                 showPosts(postsList);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getContext(),R.string.failled+" "+databaseError.getMessage(),Toast.LENGTH_SHORT).show();
                 Log.d("TAG","error " +databaseError.getMessage());
             }
         });
@@ -162,7 +169,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
         postContent_ET.clearFocus();
         hideSoftKeyboard(this.getActivity());
         if (Utils.isEmpty(post)){
-            Toast.makeText(getContext(),"post is Empty ",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.post_empty,Toast.LENGTH_SHORT).show();
         }else{
             DatabaseReference postsRef=root.child("posts");
             String key=postsRef.push().getKey();
@@ -176,7 +183,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(getContext(),"post uploaded",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.post_uploaded,Toast.LENGTH_SHORT).show();
                     Log.d("TAG","success ----------------------  ");
 
                 }
@@ -184,7 +191,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(),"failed to upload post",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.failed_to_upload_post,Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -193,26 +200,30 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
 
 
     void showPosts(final ArrayList<Post> posts){
-        postsAdapter=new PostsAdapter(getContext(),posts,this);
-        postRecycler.setAdapter(postsAdapter);
-        postRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        if (getContext()!=null) {
+            postsAdapter = new PostsAdapter(getContext(), posts, this);
+            postRecycler.setAdapter(postsAdapter);
+            postRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
-                Log.d("POSSS","pos "+pos);
-                //postRecycler.scrollToPosition(pos);
+            Log.d("POSSS", "pos " + pos);
+            //postRecycler.scrollToPosition(pos);
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         pos=((LinearLayoutManager)postRecycler.getLayoutManager()).findFirstVisibleItemPosition();
-        outState.putInt(POSITION_KEY,pos);
-        int pos2=postRecycler.getScrollY();
-        Log.d("POSSS","onsave pos "+pos2);
-
+        outState.putInt(POS_KEY,pos);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ConnectivityEvent event) {
+        fetchData();
+    };
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAcceotEvent(FRAcceptEvent frEvent) {
         fetchData();
     };
 
@@ -234,10 +245,9 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
 
     void showProfile(String uid){
         Intent intent=new Intent(getContext(),ProfileActivity.class);
-        intent.putExtra(ProfileActivity.PROFILEUID_TAG,uid);
+        intent.putExtra(ProfileActivity.PROFILE_UID_TAG,uid);
         if (getContext()!=null)
-        getContext().startActivity(intent);
-
+            getContext().startActivity(intent);
     }
 
     @Override
@@ -252,6 +262,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
+
 
     @Override
     public void onImageClicked(int position) {

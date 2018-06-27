@@ -21,6 +21,7 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
     private ArrayList<String> friendReqList;
     private Context context;
     Prefs prefs;
+    public static final String ITEM_CLICK_ACTION="item_click_action";
 
     public WidgetAdapter(Context context) {
         this.context = context;
@@ -57,7 +58,7 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
         remoteViews.setTextViewText(R.id.widget_friendReqSender_TV,friendReqList.get(i));
         remoteViews.setTextViewText(R.id.widget_friendReqLetter_TV,friendReqList.get(i).charAt(0)+"");
         Intent intent=new Intent();
-        intent.setAction(WidgetProvider.ITEM_CLICK_ACTION);
+        intent.setAction(ITEM_CLICK_ACTION);
         remoteViews.setOnClickFillInIntent(R.id.friendReq_row_item,intent);
         return remoteViews;
     }

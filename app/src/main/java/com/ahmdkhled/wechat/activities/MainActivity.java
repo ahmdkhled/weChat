@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.ahmdkhled.wechat.fragments.ConnectivityEvent;
 import com.ahmdkhled.wechat.utils.Connection;
+import com.ahmdkhled.wechat.utils.Encryption;
 import com.ahmdkhled.wechat.utils.NotificationService;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MainPagerAdapter;
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout=findViewById(R.id.tabLayout);
         String unitId=getResources().getString(R.string.adunit_id);
         MobileAds.initialize(this,unitId);
-
         MainPagerAdapter pagerAdapter=new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -55,11 +56,12 @@ public class MainActivity extends AppCompatActivity {
         if (!Connection.isConnected(this)){
             showSnackBar();
         }
+        Log.d("ENCRRR", Encryption.decrypt("ZgJHukzuQDXR2SN3gnsSk49X8kN2","CSWO6rYylUjHMih30u8Ehw==\n"));
     }
     void showSnackBar(){
         Snackbar snackbar=Snackbar.make(findViewById(R.id.activityMainContainer)
-                ,"there is no Connection ",Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("Retry", new View.OnClickListener() {
+                , R.string.no_connection,Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(R.string.retry, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Connection.isConnected(getApplicationContext())){
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         jobDispatcher=new FirebaseJobDispatcher(new GooglePlayDriver(this));
         Job job=jobDispatcher.newJobBuilder()
                 .setService(NotificationService.class)
-                .setTag("MYTAG")
+                .setTag(getString(R.string.job_tag))
                 .setTrigger(Trigger.executionWindow(12*3600,12*3600))
                 .setLifetime(Lifetime.FOREVER)
                 .setRecurring(true)

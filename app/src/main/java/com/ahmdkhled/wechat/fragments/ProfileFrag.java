@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
+import com.ahmdkhled.wechat.adapters.FragPostsAdapter;
 import com.ahmdkhled.wechat.adapters.PostsAdapter;
 import com.ahmdkhled.wechat.model.Friend;
 import com.ahmdkhled.wechat.model.Post;
@@ -69,11 +70,12 @@ public class ProfileFrag extends Fragment{
     Button addBU;
     ProgressDialog progressDialog;
     RecyclerView postRecycler;
+    AlertDialog alertDialog;
     DatabaseReference root;
     FirebaseUser currentuser;
     User user;
     ArrayList<Post> postsList;
-    PostsAdapter postsAdapter;
+    FragPostsAdapter postsAdapter;
     String uid;
     int friendshiip_state=-2;
     boolean isMyProfile=true;
@@ -83,8 +85,12 @@ public class ProfileFrag extends Fragment{
     private static final int ADD_STATE=1;
     private static final int CANCEL_REQUEST_STATE=4;
     private static final int FRIENDS_STATE=3;
-    private final String  POSITION_KEY="POSS_KEY";
+    private static final String IS_SHOWING="is_showing";
+    private static final String BIO_KEY="bio_key";
+    private static final String POSS_KEY="profile_position";
     int pos=0;
+    boolean isShowing;
+    String bio;
     AppBarLayout appBarLayout;
 
     @Nullable
@@ -107,7 +113,7 @@ public class ProfileFrag extends Fragment{
 
         Bundle b=getArguments();
         if (b!=null){
-             uid=b.getString(ProfileActivity.PROFILEUID_TAG);
+             uid=b.getString(ProfileActivity.PROFILE_UID_TAG);
             if (getUserUid().equals(uid)){
                 addcontainer.setVisibility(View.INVISIBLE);
                 bioTV.setEnabled(true);
@@ -124,16 +130,24 @@ public class ProfileFrag extends Fragment{
             bioTV.setEnabled(true);
             profileImg.setEnabled(true);
         }
-        if (savedInstanceState!=null){
-            pos=savedInstanceState.getInt(POSITION_KEY,-20);
-            appBarLayout.setExpanded(false);
-        }
 
         addBU.setEnabled(false);
-        addBU.setText("....");
+        addBU.setText(R.string.dots);
 
         if (savedInstanceState!=null){
-            pos=savedInstanceState.getInt(POSITION_KEY);
+            pos=savedInstanceState.getInt(POSS_KEY);
+            isShowing=savedInstanceState.getBoolean(IS_SHOWING);
+            bio=savedInstanceState.getString(BIO_KEY);
+
+            if (pos==0){
+                appBarLayout.setExpanded(true);
+            }else {
+                appBarLayout.setExpanded(false);
+            }
+            if (isShowing){
+                showAlertDialog(bio);
+            }
+
         }
         if (Connection.isConnected(getContext())){
             handleAddButton();
@@ -141,28 +155,10 @@ public class ProfileFrag extends Fragment{
         }
 
 
-
-
         bioTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final DatabaseReference bioRef=root.child("users").child(uid).child("bio");
-                LayoutInflater inflater=getLayoutInflater();
-                final View alertDialog=inflater.inflate(R.layout.bio_alert_dialog,null);
-                final EditText bioUpdate_ET=alertDialog.findViewById(R.id.bioUpdate_ET);
-                Button bioUpdate_BU=alertDialog.findViewById(R.id.bioUpdate_BU);
-                final AlertDialog dialog=new AlertDialog.Builder(getContext()).create();
-                dialog.setView(alertDialog);
-                dialog.show();
-                bioUpdate_BU.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String bio=bioUpdate_ET.getText().toString();
-                        bioRef.setValue(bio);
-                        dialog.dismiss();
-                    }
-                });
-
+                showAlertDialog("");
             }
         });
 
@@ -195,6 +191,7 @@ public class ProfileFrag extends Fragment{
     }
 
     void fetchData(final String userUid){
+
         DatabaseReference userRef=root.child("users").child(uid);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -214,24 +211,26 @@ public class ProfileFrag extends Fragment{
                 for (DataSnapshot data:dataSnapshot.getChildren()){
                     final Post post=data.getValue(Post.class);
                     if (post.getUid().equals(userUid)){
-                        Log.d("PROFILEE",post.getUid()+" "+currentuser.getUid());
-
+                        if (isAdded()){
                         DatabaseReference users=root.child("users").child(post.getUid());
                         users.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User user=dataSnapshot.getValue(User.class);
                                 post.setUser(user);
+                                postsList.add(post);
                                 postsAdapter.notifyDataSetChanged();
-                                Log.d("POSSSPRF","on restore pos "+pos);
                                 postRecycler.scrollToPosition(pos);
                             }
 
                             @Override
-                            public void onCancelled(DatabaseError databaseError) {}
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("PROFILEE","error is "+databaseError.getMessage());
+
+                            }
                         });
-                        postsList.add(post);
-                    }
+
+                    }}
                 }
                 showPosts(postsList);
             }
@@ -250,19 +249,18 @@ public class ProfileFrag extends Fragment{
                     if (dataSnapshot.hasChild(uid) && dataSnapshot.child(uid).hasChild(getUserUid())) {
                         Log.d("FRIENDSHIP", "cancel request");
                         addBU.setEnabled(true);
-                        addBU.setText("cancel request ");
+                        addBU.setText(R.string.cancel_request);
                         friendshiip_state = CANCEL_REQUEST_STATE;
                     } else if (dataSnapshot.hasChild(getUserUid()) && dataSnapshot.child(getUserUid()).hasChild(uid)) {
                         Log.d("FRIENDSHIP", "accept");
                         addBU.setEnabled(true);
-                        addBU.setText("Accept");
+                        addBU.setText(R.string.accept);
                         friendshiip_state = ACCEPT_STATE;
                     } else {
                         DatabaseReference friendsRef = root.child("friends");
                         friendsRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Log.d("FRIENDSHIP", "real time work..........");
                                 friendshiip_state=-2;
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                                     Friend friend = data.getValue(Friend.class);
@@ -286,7 +284,7 @@ public class ProfileFrag extends Fragment{
                                     friendshiip_state=ADD_STATE;
                                     Log.d("FRIENDSHIP", "add");
                                     addBU.setEnabled(true);
-                                    addBU.setText("Add");
+                                    addBU.setText("add");
                                 }
                                 Log.d("FRIENDSHIP", "state now "+friendshiip_state);
                             }
@@ -351,11 +349,12 @@ public class ProfileFrag extends Fragment{
         if (Utils.isEmpty(user.getProfileImg())){
             profileImg.setImageResource(R.drawable.user);
         }else {
+            if (getContext()!=null)
             Glide.with(getContext()).load(user.getProfileImg()).into(profileImg);
         }
         nameTV.setText(user.getName());
         if (Utils.isEmpty(user.getBio())&&isMyProfile){
-            bioTV.setText("set you bio :)");
+            bioTV.setText(R.string.set_your_bio);
         }else{
             bioTV.setText(user.getBio());
         }
@@ -365,15 +364,24 @@ public class ProfileFrag extends Fragment{
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         pos=((LinearLayoutManager)postRecycler.getLayoutManager()).findFirstVisibleItemPosition();
-        Log.d("POSSSPRF","onsave pos "+pos);
-        outState.putInt(POSITION_KEY,pos);
+        if (alertDialog!=null){
+        isShowing=alertDialog.isShowing();
+        EditText bioET=alertDialog.findViewById(R.id.bioUpdate_ET);
+        bio=bioET.getText().toString();
+        }
+        Log.d("DILOGG","saved is shown  "+isShowing);
+        outState.putInt(POSS_KEY,pos);
+        outState.putBoolean(IS_SHOWING,isShowing);
+        outState.putString(BIO_KEY,bio);
     }
 
     void showPosts(ArrayList<Post> posts){
-        postsAdapter=new PostsAdapter(getContext(),posts);
+        if (getContext()!=null){
+        postsAdapter=new FragPostsAdapter(posts,getContext());
         postRecycler.setAdapter(postsAdapter);
         postRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         postRecycler.scrollToPosition(pos);
+        }
 
     }
 
@@ -392,7 +400,7 @@ public class ProfileFrag extends Fragment{
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    Toast.makeText(getContext(),"your request have been sent "
+                                    Toast.makeText(getContext(), R.string.request_sent
                                             ,Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -405,13 +413,13 @@ public class ProfileFrag extends Fragment{
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(getContext(),"request cancelled ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.request_cancelled,Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(),"failed to cancel request ",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.failed_to_cancel_request,Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -431,13 +439,13 @@ public class ProfileFrag extends Fragment{
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    Toast.makeText(getContext(),"unfriend ",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.unfriend,Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(),"failed ",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),getString(R.string.failled)+e.getMessage(),Toast.LENGTH_SHORT).show();
                             }
                         });
                         break;
@@ -472,7 +480,7 @@ public class ProfileFrag extends Fragment{
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()){
-                                                Toast.makeText(getContext(),"you are friends now ",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getContext(), R.string.your_are_friends_now,Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
@@ -482,7 +490,7 @@ public class ProfileFrag extends Fragment{
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(),"failed to accept",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.failed_to_accept_request,Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -507,14 +515,15 @@ public class ProfileFrag extends Fragment{
                                     if (task.isSuccessful()){
                                         profileImg.setImageURI(imageUri);
                                         progressDialog.dismiss();
-                                        Toast.makeText(getContext(),"profile image updated",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), R.string.profile_image_updated,Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.d("STORAGEEE",""+e.getMessage());
-                                    Toast.makeText(getContext(),"failed to update photo ",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.failed_to_update_photo+""+e.getMessage()
+                                            ,Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -523,7 +532,7 @@ public class ProfileFrag extends Fragment{
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("STORAGEEE",""+e.getMessage());
-                Toast.makeText(getContext(),"failed to update photo ",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),R.string.failed_to_update_photo+" "+e.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -540,9 +549,9 @@ public class ProfileFrag extends Fragment{
             if (getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
                 if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)){
                     AlertDialog.Builder alertDialog=new AlertDialog.Builder(getContext());
-                    alertDialog.setTitle("Storage Permission");
-                    alertDialog.setMessage("we need this permission to upload your profile photo :)");
-                    alertDialog.setPositiveButton("ok ", new DialogInterface.OnClickListener() {
+                    alertDialog.setTitle(R.string.Storage_Permission);
+                    alertDialog.setMessage(R.string.permission_body);
+                    alertDialog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
@@ -551,7 +560,7 @@ public class ProfileFrag extends Fragment{
                     alertDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(getContext(),"ok thanks",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), R.string.ok_thanks,Toast.LENGTH_SHORT).show();
                         }
                     });
                     alertDialog.show();
@@ -570,7 +579,37 @@ public class ProfileFrag extends Fragment{
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle("uploading your profile image");
+        progressDialog.setTitle(getString(R.string.uploading_image));
         progressDialog.show();
+    }
+
+    void showAlertDialog(String bio){
+        final DatabaseReference bioRef=root.child("users").child(uid).child("bio");
+        LayoutInflater inflater=getLayoutInflater();
+        final View alertDialogView=inflater.inflate(R.layout.bio_alert_dialog,null);
+        final EditText bioUpdate_ET=alertDialogView.findViewById(R.id.bioUpdate_ET);
+        if (!Utils.isEmpty(bio))
+            bioUpdate_ET.setText(bio);
+        Button bioUpdate_BU=alertDialogView.findViewById(R.id.bioUpdate_BU);
+        alertDialog =new AlertDialog.Builder(getContext()).create();
+        alertDialog.setView(alertDialogView);
+
+        bioUpdate_BU.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String bio=bioUpdate_ET.getText().toString();
+                bioRef.setValue(bio);
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (alertDialog!=null&&alertDialog.isShowing())
+            alertDialog.dismiss();
     }
 }

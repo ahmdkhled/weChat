@@ -26,20 +26,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:width="15dp"
                 android:height="15dp"
                 android:background="#FFCC66"
-                android:text="Ad"/>
+                android:text="@string/ad"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:paddingTop="3dp">
 
                 <LinearLayout
@@ -51,6 +51,7 @@
                         android:id="@+id/appinstall_app_icon"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
+                        android:contentDescription="@string/app_insall_ad_icon"
                         android:adjustViewBounds="true"
                         android:paddingBottom="5dp" />
 

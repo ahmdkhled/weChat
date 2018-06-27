@@ -92,6 +92,7 @@ public class SignupActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.d("TAG", e.getMessage());
+                            Toast.makeText(getApplicationContext(), R.string.failled+" "+e.getMessage(), Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
                         }
                     });
@@ -118,25 +119,24 @@ public class SignupActivity extends AppCompatActivity {
 
     void validateInput(String name, String mail, String pass) {
         if (Utils.isEmpty(name)) {
-            nameIL.setError("enter your name please");
+            nameIL.setError(getString(R.string.enter_your_name_please));
         }
         if (Utils.isEmpty(mail)) {
-            emailIL.setError("enter your mail please");
+            emailIL.setError(getString(R.string.enter_your_mail_please));
         }
         if (Utils.isEmpty(pass)) {
-            passwordIL.setError("enter your password please");
+            passwordIL.setError(getString(R.string.enter_your_password_please));
         }
     }
 
     void showDialog() {
-        progressDialog.setTitle("please wait");
+        progressDialog.setTitle(getString(R.string.please_wait));
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 
     void saveUser(String userId, String name, String email, String password) {
-
         DatabaseReference uidRef = rootRef.child("users").child(userId);
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("name", name);
@@ -149,7 +149,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "signed up  ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.signed_up, Toast.LENGTH_SHORT).show();
                         Intent intent=new Intent(getApplicationContext(),MainActivity.class);
                         startActivity(intent);
                         finish();
@@ -158,7 +158,7 @@ public class SignupActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "failed  ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.failled+e.getMessage(), Toast.LENGTH_SHORT).show();
 
             }
         });

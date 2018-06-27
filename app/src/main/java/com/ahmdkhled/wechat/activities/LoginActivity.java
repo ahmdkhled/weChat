@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(),"failed to login "+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),getString(R.string.failed_to_login)+e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                 });
                 }
@@ -85,16 +85,24 @@ public class LoginActivity extends AppCompatActivity {
     void validateInput( String mail, String pass) {
 
         if (Utils.isEmpty(mail)) {
-            emailIL.setError("enter your mail please");
+            emailIL.setError(getString(R.string.enter_your_mail_please));
         }
         if (Utils.isEmpty(pass)) {
-            passwordIL.setError("enter your password please");
+            passwordIL.setError(getString(R.string.enter_your_password_please));
         }
     }
     void showDialog() {
-        progressDialog.setTitle("please wait");
+        progressDialog.setTitle(getString(R.string.please_wait));
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog!=null&&progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
     }
 }

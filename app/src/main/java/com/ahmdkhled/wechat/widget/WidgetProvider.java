@@ -17,13 +17,11 @@ import com.ahmdkhled.wechat.activities.MainActivity;
  */
 
 public class WidgetProvider extends AppWidgetProvider {
-    public static final String ITEM_CLICK_ACTION="item_click_action";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //Log.d("WIDGETT","on receive "+intent.getAction());
 
-        if (intent.getAction().equals(ITEM_CLICK_ACTION)){
+        if (intent.getAction().equals(WidgetAdapter.ITEM_CLICK_ACTION)){
             Intent i=new Intent(context,MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
@@ -42,7 +40,7 @@ public class WidgetProvider extends AppWidgetProvider {
             Log.d("WIDGETT","on update ");
 
             Intent intent=new Intent(context,WidgetProvider.class);
-            intent.setAction(ITEM_CLICK_ACTION);
+            intent.setAction(WidgetAdapter.ITEM_CLICK_ACTION);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,myAppWidgetIds);
             PendingIntent pendingIntent=PendingIntent.getBroadcast(context,151,intent,PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setPendingIntentTemplate(R.id.widget_listView,pendingIntent);

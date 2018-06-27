@@ -1,10 +1,12 @@
 package com.ahmdkhled.wechat.adapters;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.fragments.FriendReqFragment;
 import com.ahmdkhled.wechat.fragments.PostsFragment;
 import com.ahmdkhled.wechat.fragments.ProfileFrag;
@@ -15,13 +17,17 @@ import com.ahmdkhled.wechat.fragments.ProfileFrag;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
+    Context context;
     private Fragment[] fragments=new Fragment[]
             {new PostsFragment(),new FriendReqFragment(),new ProfileFrag()};
-    private String[] tabs=new String[]{"Posts","Friend Reguest","profile"};
+    private String[] tabs={"Posts","Friend Req","profile"};
+
 
     public MainPagerAdapter(FragmentManager fm) {
         super(fm);
     }
+
+
 
     @Override
     public Fragment getItem(int position) {
@@ -39,4 +45,6 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return tabs[position];
     }
+
+
 }

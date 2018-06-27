@@ -22,4 +22,49 @@
     <string name="update_bio">Update Bio</string>
     <string name="enter_your_new_bio">enter your new bio</string>
     <string name="edit_your_bio">Edit Your Bio</string>
+    <string name="friend_requests">Friend Requests</string>
+    <string name="log_out">Log Out</string>
+    <string name="ad">Ad</string>
+    <string name="app_insall_ad_icon">app insall ad icon</string>
+    <string name="contentad_image">contentad_image</string>
+    <string name="content_ad_logo">content ad logo</string>
+    <string name="friend_reqiest_sender_image">friend reqiest sender image</string>
+    <string name="write_post_button">write post button</string>
+    <string name="please_wait">please wait</string>
+    <string name="enter_your_mail_please">enter your mail please</string>
+    <string name="enter_your_password_please">enter your password please</string>
+    <string name="enter_your_name_please">enter your name please</string>
+    <string name="signed_up">signed up</string>
+    <string name="failled">failed</string>
+    <string name="set_your_bio">set you bio</string>
+    <string name="Storage_Permission">Storage Permission</string>
+    <string name="permission_body">we need this permission to upload your profile photo :)</string>
+    <string name="no">no</string>
+    <string name="ok_thanks">OK thanks</string>
+    <string name="failed_to_login">failed to login</string>
+    <string name="no_connection">there is no Connection</string>
+    <string name="retry">Retry</string>
+    <string name="job_tag">MYTAG</string>
+    <string name="cancel_request">cancel request</string>
+    <string name="request_sent">your request have been sent</string>
+    <string name="request_cancelled">request cancelled</string>
+    <string name="failed_to_cancel_request">failed to cancel request</string>
+    <string name="unfriend">unfriend</string>
+    <string name="your_are_friends_now">you are friends now</string>
+    <string name="failed_to_accept_request">failed to accept</string>
+    <string name="profile_image_updated">profile image updated</string>
+    <string name="failed_to_update_photo">failed to update photo</string>
+    <string name="uploading_image">uploading your profile image</string>
+    <string name="dots">....</string>
+    <string name="failed_to_upload_post">failed to upload post</string>
+    <string name="post_uploaded">post uploaded</string>
+    <string name="post_empty">post is Empty</string>
+
+
+    <string name="test_device_hash">B1A716991CB63A3ED7AE22397DD5E718</string>
+
+
+    <string name="notification_body">hey!! write a post now and share it with your friends</string>
+    <string name="notification_channel">reminder notification channel</string>
+
 </resources>

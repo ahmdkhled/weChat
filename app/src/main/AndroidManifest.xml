@@ -24,6 +24,7 @@
             android:launchMode="singleTop"/>
         <activity
             android:name=".activities.LoginActivity"
+            android:theme="@style/signUpTheme"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ProfileActivity"
