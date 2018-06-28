@@ -3,6 +3,8 @@ package com.ahmdkhled.wechat.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ahmdkhled.wechat.R;
@@ -21,6 +23,9 @@ public class ProfileActivity extends AppCompatActivity {
         if (intent!=null&&intent.hasExtra(PROFILE_UID_TAG)){
             showProfile(intent.getStringExtra(PROFILE_UID_TAG));
         }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
     }
 
     void showProfile(String uid){
@@ -33,4 +38,12 @@ public class ProfileActivity extends AppCompatActivity {
                 .add(R.id.profile_activity,profileFrag,profile_frag_tag)
                 .commit();
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+
 }

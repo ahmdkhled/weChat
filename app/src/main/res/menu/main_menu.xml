@@ -3,11 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/usersList"
+        android:title="@string/usersList"
+        app:showAsAction="ifRoom"
+        />
+    <item
         android:id="@+id/logOut"
         android:title="@string/log_out"
-        app:showAsAction="always"
-        >
+        app:showAsAction="ifRoom"
+        />
 
-    </item>
+
 
 </menu>

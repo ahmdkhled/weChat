@@ -18,8 +18,10 @@
             android:fontFamily="casual"
             android:text="@string/app_name"
             android:textColor="#fff"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:textStyle="bold"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,7 +127,6 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             >
@@ -151,6 +152,9 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:gravity="start|center"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textSize="20sp"
                 android:textColor="#d23c4f"
                 android:text="@string/signup" />
 

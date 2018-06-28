@@ -33,15 +33,13 @@
                 android:id="@+id/llll"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="25dp"
                 android:background="#263238"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@+id/addContainer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 />
-
-
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileImg_IV"
@@ -109,7 +107,9 @@
                         android:background="#c62828"
                         android:text="@string/add"
                         android:textAllCaps="false"
-                        android:textColor="#fff" />
+                        android:textColor="#fff"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp" />
 
 
 

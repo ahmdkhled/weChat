@@ -6,15 +6,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.ahmdkhled.wechat.fragments.ConnectivityEvent;
 import com.ahmdkhled.wechat.utils.Connection;
-import com.ahmdkhled.wechat.utils.Encryption;
 import com.ahmdkhled.wechat.utils.NotificationService;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MainPagerAdapter;
@@ -56,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         if (!Connection.isConnected(this)){
             showSnackBar();
         }
-        Log.d("ENCRRR", Encryption.decrypt("ZgJHukzuQDXR2SN3gnsSk49X8kN2","CSWO6rYylUjHMih30u8Ehw==\n"));
     }
     void showSnackBar(){
         Snackbar snackbar=Snackbar.make(findViewById(R.id.activityMainContainer)
@@ -101,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(),SignupActivity.class));
             finish();
+        }
+        if (item.getItemId()==R.id.usersList){
+            startActivity(new Intent(getApplicationContext(),UsersListActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
