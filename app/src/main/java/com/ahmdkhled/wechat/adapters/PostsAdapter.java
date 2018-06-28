@@ -58,7 +58,6 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("NATIVEEE","onCreateViewHolder ");
         if (viewType==POSTS_TYPE){
         View row= LayoutInflater.from(context).inflate(R.layout.post_row,parent,false);
         return  new PostHolder(row);
@@ -73,7 +72,6 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         if (getItemViewType(position)==POSTS_TYPE){
             PostHolder postHolder= (PostHolder) holder;
             int pos=mapPostition(position);
-            Log.d("POSSSM","position "+position+" >>> "+pos);
             postHolder.populateData(pos);
         }else{
             loadAd(holder);
@@ -91,8 +89,14 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemCount() {
-        if (posts==null) return 0;
-        return posts.size()+(posts.size()/5)-1;
+        if(posts==null){
+            return 0;}
+        if (posts.size()%5==0){
+            return posts.size()+(posts.size()/5)-1;
+        }else{
+            return posts.size()+(posts.size()/5);
+        }
+
     }
 
     private boolean isAdType(int position){
