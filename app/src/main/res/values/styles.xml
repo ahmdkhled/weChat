@@ -17,4 +17,12 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="UsersListTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#fff</item>
+        <item name="colorPrimaryDark">#263238</item>
+        <item name="colorAccent">#d94255</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
 </resources>

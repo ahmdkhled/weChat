@@ -55,6 +55,7 @@
         </service>
 
         <activity android:name=".activities.UsersListActivity"
+            android:theme="@style/UsersListTheme"
             android:parentActivityName=".activities.MainActivity"/>
     </application>
 
