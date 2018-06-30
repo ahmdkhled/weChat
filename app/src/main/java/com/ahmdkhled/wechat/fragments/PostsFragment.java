@@ -115,23 +115,23 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                 for (DataSnapshot data:dataSnapshot.getChildren()) {
                     final Post post = data.getValue(Post.class);
                     DatabaseReference friendsRef = root.child("friends");
-                    friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    friendsRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 Friend friend = data.getValue(Friend.class);
-                                String user1 = friend.getUser1();
+                                final String user1 = friend.getUser1();
                                 String user2 = friend.getUser2();
-                                if (((user1.equals(post.getUid()) && user2.equals(getCurrentUserUid()))
-                                        || (user1.equals(getCurrentUserUid()) && user2.equals(post.getUid())))) {
+                                if ( (user1.equals(post.getUid()) && user2.equals(getCurrentUserUid()))
+                                        || (user1.equals(getCurrentUserUid()) && user2.equals(post.getUid())) ) {
+                                    postsList.add(post);
                                     DatabaseReference userRef = root.child("users").child(post.getUid());
-                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    userRef.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             User user = dataSnapshot.getValue(User.class);
                                             user.setUid(dataSnapshot.getKey());
                                             post.setUser(user);
-                                            postsList.add(post);
                                             postsAdapter.notifyDataSetChanged();
                                             postRecycler.scrollToPosition(pos);
 
@@ -204,9 +204,8 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             postsAdapter = new PostsAdapter(getContext(), posts, this);
             postRecycler.setAdapter(postsAdapter);
             postRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            Log.d("POSSS", "pos " + pos);
-            //postRecycler.scrollToPosition(pos);
+            Log.d("POSSSS", "pos " + pos);
+            postRecycler.scrollToPosition(pos);
         }
     }
 
@@ -214,6 +213,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         pos=((LinearLayoutManager)postRecycler.getLayoutManager()).findFirstVisibleItemPosition();
+        Log.d("POSSSS", "on save pos " + pos);
         outState.putInt(POS_KEY,pos);
     }
 
