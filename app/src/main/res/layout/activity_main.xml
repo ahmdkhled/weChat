@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tabLayout"
         app:tabSelectedTextColor="#ffffff"
-        app:tabTextColor="#0288d1"
+        app:tabTextColor="@color/tabColor"
         app:tabIndicatorColor="#fff"
         android:background="@color/colorPrimary"/>
 
