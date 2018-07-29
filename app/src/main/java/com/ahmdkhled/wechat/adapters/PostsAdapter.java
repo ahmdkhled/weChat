@@ -45,6 +45,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final int POSTS_TYPE=1;
     private static final int AD_TYPE=2;
     private  String adUnitId="";
+    int adEach=5;
 
 
     public PostsAdapter(Context context,ArrayList<Post> posts,OnPostCLicked onPostCLicked) {
@@ -91,26 +92,26 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public int getItemCount() {
         if(posts==null){
             return 0;}
-        if (posts.size()%5==0){
-            return posts.size()+(posts.size()/5)-1;
+        if (posts.size()%adEach==0){
+            return posts.size()+(posts.size()/adEach)-1;
         }else{
-            return posts.size()+(posts.size()/5);
+            return posts.size()+(posts.size()/adEach);
         }
 
     }
 
     private boolean isAdType(int position){
-        int num=position/5;
-        return position == 5 * num + (num - 1);
+        int num=position/adEach;
+        return position == adEach * num + (num - 1);
     }
 
     private int mapPostition(int position){
-        int adNum=position/5;
+        int adNum=position/adEach;
         int prevNum=adNum-1;
         int nextNum=adNum+1;
-        int adNumValue=adNum*5+(adNum-1);
-        int prevNumValue=prevNum*5+(prevNum-1);
-        int nextNumValue=nextNum*5+(nextNum-1);
+        int adNumValue=adNum*adEach+(adNum-1);
+        int prevNumValue=prevNum*adEach+(prevNum-1);
+        int nextNumValue=nextNum*adEach+(nextNum-1);
         if (position>prevNumValue&&position<adNumValue){
             return position-prevNum;
         }else if (position>adNumValue&&position<nextNumValue){
