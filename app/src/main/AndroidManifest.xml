@@ -28,9 +28,7 @@
             android:name=".activities.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/signUpTheme" />
-        <activity
-            android:name=".activities.ProfileActivity"
-            />
+        <activity android:name=".activities.ProfileActivity" />
 
         <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
@@ -44,8 +42,7 @@
 
         <service
             android:name=".widget.WidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS">
-        </service>
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
             android:name=".utils.NotificationService"
             android:exported="false">
@@ -54,9 +51,12 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activities.UsersListActivity"
-            android:theme="@style/UsersListTheme"
-            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name=".activities.UsersListActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/UsersListTheme" />
+        <activity android:name=".activities.SettingActivity" />
+        <activity android:name=".FriendsActivity"></activity>
     </application>
 
 </manifest>

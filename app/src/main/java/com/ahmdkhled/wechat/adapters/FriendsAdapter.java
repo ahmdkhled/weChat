@@ -20,13 +20,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Ahmed Khaled on 6/27/2018.
  */
 
-public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.UsersHolder>{
+public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UsersHolder>{
 
     private ArrayList<User> users;
     private Context context;
     private OnUserClickd onUserClickd;
 
-    public UsersListAdapter(ArrayList<User> users, Context context, OnUserClickd onUserClickd) {
+    public FriendsAdapter(ArrayList<User> users, Context context, OnUserClickd onUserClickd) {
         this.users = users;
         this.context = context;
         this.onUserClickd = onUserClickd;

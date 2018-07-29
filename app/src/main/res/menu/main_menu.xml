@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/usersList"
-        android:title="@string/usersList"
+        android:id="@+id/settings"
+        android:title="@string/settings"
         app:showAsAction="ifRoom"
         />
     <item

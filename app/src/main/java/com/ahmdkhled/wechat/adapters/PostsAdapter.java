@@ -45,7 +45,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final int POSTS_TYPE=1;
     private static final int AD_TYPE=2;
     private  String adUnitId="";
-    int adEach=5;
+    int adEach=10;
 
 
     public PostsAdapter(Context context,ArrayList<Post> posts,OnPostCLicked onPostCLicked) {

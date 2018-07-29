@@ -66,6 +66,6 @@
 
     <string name="notification_body">hey!! write a post now and share it with your friends</string>
     <string name="notification_channel">reminder notification channel</string>
-    <string name="usersList">users</string>
+    <string name="settings">Settings</string>
 
 </resources>
