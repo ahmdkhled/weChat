@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.FriendsAdapter;
@@ -29,10 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class UsersListActivity extends AppCompatActivity {
+public class FriendsActivity extends AppCompatActivity implements FriendsAdapter.OnUserClickd{
 
     DatabaseReference root;
-    ArrayList<User> usersList;
     ArrayList<User> friendsList;
     FriendsAdapter usersAdapter;
     RecyclerView usersRecycler;
@@ -41,22 +39,21 @@ public class UsersListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_users_list);
+        setContentView(R.layout.activity_friends);
         usersRecycler=findViewById(R.id.userRecycler);
         searcBox=findViewById(R.id.userSearchBox_ET);
-        usersList=new ArrayList<>();
         friendsList=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().getRoot();
 
         getSupportActionBar().setElevation(0);
-        SpannableString s = new SpannableString("Users");
-        s.setSpan(new ForegroundColorSpan(Color.parseColor("#000000"))
-                , 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString s = new SpannableString("Friends");
+        s.setSpan(new ForegroundColorSpan(Color.parseColor("#ffffff"))
+                , 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(s);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         itemDecoration=new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
 
-        //getUsers();
         getFriends();
 
         searcBox.addTextChangedListener(new TextWatcher() {
@@ -78,36 +75,15 @@ public class UsersListActivity extends AppCompatActivity {
 
     }
 
-    void getUsers(){
-        DatabaseReference users=root.child("users");
-        users.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                usersList.clear();
-                for (DataSnapshot data:dataSnapshot.getChildren()){
-                    String uid=data.getKey();
-                    if (!uid.equals(getCurrentUserUid())){
-                        User user=data.getValue(User.class);
-                        user.setUid(uid);
-                        usersList.add(user);
-                        //usersAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-        showUsers(usersList);
-    }
 
     void getFriends(){
+
         DatabaseReference friendsRef=root.child("friends");
         friendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                friendsList.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
                     Friend friend=data.getValue(Friend.class);
                     String friendUid=null;
@@ -118,13 +94,12 @@ public class UsersListActivity extends AppCompatActivity {
                     }
                     if (friendUid!=null){
                         DatabaseReference usersRef=root.child("users").child(friendUid);
-                        usersRef.addValueEventListener(new ValueEventListener() {
+                        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                friendsList.clear();
-                                    User user=dataSnapshot.getValue(User.class);
-                                    friendsList.add(user);
-                                    usersAdapter.notifyDataSetChanged();
+                                User user=dataSnapshot.getValue(User.class);
+                                friendsList.add(user);
+                                usersAdapter.notifyDataSetChanged();
 
                             }
 
@@ -148,7 +123,7 @@ public class UsersListActivity extends AppCompatActivity {
     }
 
     private void showUsers(ArrayList<User> usersList) {
-        //usersAdapter=new FriendsAdapter(usersList,this,this);
+        usersAdapter=new FriendsAdapter(usersList,this,this);
         usersRecycler.setAdapter(usersAdapter);
         usersRecycler.removeItemDecoration(itemDecoration);
         usersRecycler.addItemDecoration(itemDecoration);
@@ -177,5 +152,9 @@ public class UsersListActivity extends AppCompatActivity {
         return users;
     }
 
+    @Override
+    public void onUserClicked(int position) {
+        showProfile(friendsList.get(position).getUid());
+    }
 
 }

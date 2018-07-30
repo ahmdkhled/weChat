@@ -67,7 +67,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
         postsList=new ArrayList<>();
         postRecycler=v.findViewById(R.id.postsRecycler);
         writePost=v.findViewById(R.id.writePost_BU);
-        userImage=v.findViewById(R.id.userImg);
+        userImage=v.findViewById(R.id.myprofileImg);
         postContent_ET =v.findViewById(R.id.writePostContent_ET);
         root = FirebaseDatabase.getInstance().getReference().getRoot();
         writePost.setOnClickListener(new View.OnClickListener() {

@@ -22,14 +22,14 @@ public class SettingActivity extends AppCompatActivity {
         findFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(),UsersListActivity.class));
+                startActivity(new Intent(getApplicationContext(),UsersActivity.class));
             }
         });
 
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(),UsersListActivity.class));
+                startActivity(new Intent(getApplicationContext(),FriendsActivity.class));
             }
         });
 

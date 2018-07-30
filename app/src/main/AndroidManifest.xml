@@ -52,11 +52,13 @@
         </service>
 
         <activity
-            android:name=".activities.UsersListActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:name=".activities.UsersActivity"
+            android:parentActivityName=".activities.SettingActivity"
             android:theme="@style/UsersListTheme" />
-        <activity android:name=".activities.SettingActivity" />
-        <activity android:name=".FriendsActivity"></activity>
+        <activity android:name=".activities.SettingActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".activities.FriendsActivity"
+            android:parentActivityName=".activities.SettingActivity"/>
     </application>
 
 </manifest>

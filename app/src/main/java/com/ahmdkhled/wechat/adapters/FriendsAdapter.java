@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Ahmed Khaled on 6/27/2018.
  */
 
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UsersHolder>{
+public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendHolder>{
 
     private ArrayList<User> users;
     private Context context;
@@ -34,13 +35,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UsersHol
 
     @NonNull
     @Override
-    public UsersHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View row= LayoutInflater.from(parent.getContext()).inflate(R.layout.users_list_row,parent,false);
-        return new UsersHolder(row);
+    public FriendHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View row= LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_list_row,parent,false);
+        return new FriendHolder(row);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UsersHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FriendHolder holder, int position) {
         holder.populateData(users.get(position));
     }
 
@@ -51,14 +52,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UsersHol
         return users.size();
     }
 
-    class UsersHolder extends RecyclerView.ViewHolder{
+    class FriendHolder extends RecyclerView.ViewHolder{
         TextView name,bio;
         CircleImageView userImg;
-        UsersHolder(View itemView) {
+        FriendHolder(View itemView) {
             super(itemView);
-            userImg=itemView.findViewById(R.id.userImg_IV);
-            name=itemView.findViewById(R.id.userName_TV);
-            bio=itemView.findViewById(R.id.userBio_TV);
+            userImg=itemView.findViewById(R.id.friendImg_IV);
+            name=itemView.findViewById(R.id.friendName_TV);
+            bio=itemView.findViewById(R.id.friendBio_TV);
 
             name.setOnClickListener(new View.OnClickListener() {
                 @Override

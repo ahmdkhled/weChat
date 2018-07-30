@@ -1,10 +1,11 @@
-package com.ahmdkhled.wechat;
+package com.ahmdkhled.wechat.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -14,9 +15,11 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.ahmdkhled.wechat.activities.ProfileActivity;
+import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.FriendsAdapter;
+import com.ahmdkhled.wechat.adapters.UsersAdapter;
 import com.ahmdkhled.wechat.model.Friend;
 import com.ahmdkhled.wechat.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,21 +31,20 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class FriendsActivity extends AppCompatActivity implements FriendsAdapter.OnUserClickd{
+public class UsersActivity extends AppCompatActivity implements UsersAdapter.OnItemClickListener{
 
     DatabaseReference root;
-    ArrayList<User> friendsList;
-    FriendsAdapter usersAdapter;
+    ArrayList<User> usersList;
+    UsersAdapter usersAdapter;
     RecyclerView usersRecycler;
     EditText searcBox;
-    DividerItemDecoration itemDecoration;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_users_list);
+        setContentView(R.layout.activity_friends);
         usersRecycler=findViewById(R.id.userRecycler);
         searcBox=findViewById(R.id.userSearchBox_ET);
-        friendsList=new ArrayList<>();
+        usersList=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().getRoot();
 
         getSupportActionBar().setElevation(0);
@@ -51,14 +53,12 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
                 , 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(s);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
-        itemDecoration=new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
 
-        getFriends();
+        getUsers();
 
         searcBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -74,58 +74,36 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
 
     }
 
-
-
-    void getFriends(){
-        DatabaseReference friendsRef=root.child("friends");
-        friendsRef.addValueEventListener(new ValueEventListener() {
+    void getUsers(){
+        DatabaseReference users=root.child("users");
+        users.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                usersList.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
-                    Friend friend=data.getValue(Friend.class);
-                    String friendUid=null;
-                    if (friend.getUser1().equals(getCurrentUserUid())){
-                        friendUid=friend.getUser2();
-                    }else if (friend.getUser2().equals(getCurrentUserUid())){
-                        friendUid=friend.getUser1();
+                    String uid=data.getKey();
+                    if (!uid.equals(getCurrentUserUid())){
+                        User user=data.getValue(User.class);
+                        user.setUid(uid);
+                        usersList.add(user);
+                        usersAdapter.notifyDataSetChanged();
                     }
-                    if (friendUid!=null){
-                        DatabaseReference usersRef=root.child("users").child(friendUid);
-                        usersRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                friendsList.clear();
-                                User user=dataSnapshot.getValue(User.class);
-                                friendsList.add(user);
-                                usersAdapter.notifyDataSetChanged();
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
-
-        showUsers(friendsList);
+        showUsers(usersList);
     }
 
+
     private void showUsers(ArrayList<User> usersList) {
-        usersAdapter=new FriendsAdapter(usersList,this,this);
+        usersAdapter=new UsersAdapter(this,usersList,this);
         usersRecycler.setAdapter(usersAdapter);
-        usersRecycler.removeItemDecoration(itemDecoration);
-        usersRecycler.addItemDecoration(itemDecoration);
-        usersRecycler.setLayoutManager(new LinearLayoutManager(this));
+        usersRecycler.setLayoutManager(new GridLayoutManager(this,2));
 
     }
 
@@ -134,15 +112,16 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
         profileIntent.putExtra(ProfileActivity.PROFILE_UID_TAG,uid);
         startActivity(profileIntent);
     }
+
     String getCurrentUserUid(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     ArrayList<User> filterUsers(String search){
         if (TextUtils.isEmpty(search))
-            return friendsList;
+            return usersList;
         ArrayList<User> users=new ArrayList<>();
-        for (User user:friendsList){
+        for (User user:usersList){
             if (user.getName().contains(search)){
                 users.add(user);
             }
@@ -150,9 +129,14 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
         return users;
     }
 
+
     @Override
-    public void onUserClicked(int position) {
-        showProfile(friendsList.get(position).getUid());
+    public void onAddClicked(int pos) {
+
     }
 
+    @Override
+    public void onItemClicked(int pos) {
+        showProfile(usersList.get(pos).getUid());
+    }
 }

@@ -1,50 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:padding="5dp"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#fff"
-    android:padding="5dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/userImg_IV"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:src="@drawable/user" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/userName_TV"
-        tools:text="Ahmed Khaled"
-        app:layout_constraintLeft_toRightOf="@id/userImg_IV"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="#212121"/>
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        tools:src="@drawable/user"
+        android:scaleType="fitXY"
+        android:id="@+id/userImage"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:text="hello world"
-        android:id="@+id/userBio_TV"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textSize="15sp"
-        app:layout_constraintLeft_toLeftOf="@+id/userName_TV"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName_TV"
+        android:id="@+id/userName"
+        tools:text="Ahmed Khaled"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@id/userImage"
+        app:layout_constraintEnd_toEndOf="@id/userImage"
+        app:layout_constraintTop_toBottomOf="@id/userImage"/>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:id="@+id/add"
+        app:layout_constraintTop_toBottomOf="@id/userName"
+        app:layout_constraintStart_toStartOf="@id/userName"
+        app:layout_constraintEnd_toEndOf="@id/userName"
+        android:background="@color/colorPrimary"
+        android:textColor="#fff"
+        android:textAllCaps="false"
+        android:textSize="20sp"
         />
 
 </android.support.constraint.ConstraintLayout>
