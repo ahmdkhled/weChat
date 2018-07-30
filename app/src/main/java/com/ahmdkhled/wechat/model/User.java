@@ -15,6 +15,7 @@ public  class User implements Parcelable{
     private String password;
     private String profileImg;
     private String bio;
+    private int friendShipState;
 
     public User(String uid, String name, String email, String password, String profileImg, String bio) {
         this.uid = uid;
@@ -34,6 +35,7 @@ public  class User implements Parcelable{
         password = in.readString();
         profileImg = in.readString();
         bio = in.readString();
+        friendShipState=in.readInt();
     }
 
 
@@ -81,6 +83,14 @@ public  class User implements Parcelable{
         this.bio = bio;
     }
 
+    public int getFriendShipState() {
+        return friendShipState;
+    }
+
+    public void setFriendShipState(int friendShipState) {
+        this.friendShipState = friendShipState;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,6 +104,7 @@ public  class User implements Parcelable{
         parcel.writeString(password);
         parcel.writeString(profileImg);
         parcel.writeString(bio);
+        parcel.writeInt(friendShipState);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

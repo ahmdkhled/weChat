@@ -48,14 +48,12 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UserHolder>
     private static final int ADD_STATE=1;
     private static final int CANCEL_REQUEST_STATE=4;
     private static final int FRIENDS_STATE=3;
-    private ArrayList<Integer> friendshiip_state;
     private DatabaseReference root;
 
     public UsersAdapter(Context context, ArrayList<User> usersList, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.usersList = usersList;
         this.onItemClickListener = onItemClickListener;
-        friendshiip_state=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().getRoot();
 
     }
@@ -79,7 +77,7 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UserHolder>
         }
 
         handleAddButton(user.getUid(),position,holder);
-        Log.d("BUGG",""+user.getUid());
+
     }
 
 
@@ -105,13 +103,13 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UserHolder>
                 @Override
                 public void onClick(View view) {
                     String uid=usersList.get(getAdapterPosition()).getUid();
-                    if (friendshiip_state.get(getAdapterPosition())==ADD_STATE){
+                    if (usersList.get(getAdapterPosition()).getFriendShipState()==ADD_STATE){
                         addFriend(uid);
-                    }else if (friendshiip_state.get(getAdapterPosition())==CANCEL_REQUEST_STATE){
+                    }else if (usersList.get(getAdapterPosition()).getFriendShipState()==CANCEL_REQUEST_STATE){
                         cancelRequest(uid);
-                    }else if (friendshiip_state.get(getAdapterPosition())==ACCEPT_STATE){
+                    }else if (usersList.get(getAdapterPosition()).getFriendShipState()==ACCEPT_STATE){
                         acceptRequest(uid);
-                    }else if (friendshiip_state.get(getAdapterPosition())==FRIENDS_STATE){
+                    }else if (usersList.get(getAdapterPosition()).getFriendShipState()==FRIENDS_STATE){
                         unFriend(uid);
                     }
                 }
@@ -131,72 +129,68 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UserHolder>
     }
 
     private void handleAddButton(final String uid,final int pos,UserHolder holder){
-        friendshiip_state.add(-2);
+        usersList.get(pos).setFriendShipState(-2);
         final Button addBU=holder.add;
-            //addBU.setEnabled(false);
-            addBU.setText("...");
+        //addBU.setEnabled(false);
+        addBU.setText("...");
 
-            final DatabaseReference friendReqRef = root.child("friendRequests");
-            friendReqRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.hasChild(uid) && dataSnapshot.child(uid).hasChild(getUserUid())) {
-                        Log.d("FRIENDSHIP", "cancel request");
-                        addBU.setEnabled(true);
-                        addBU.setText(R.string.cancel_request);
-                        friendshiip_state.set(pos,CANCEL_REQUEST_STATE);
-                    } else if (dataSnapshot.hasChild(getUserUid()) && dataSnapshot.child(getUserUid()).hasChild(uid)) {
-                        Log.d("FRIENDSHIP", "accept");
-                        addBU.setEnabled(true);
-                        addBU.setText(R.string.accept);
-                        friendshiip_state.set(pos,ACCEPT_STATE);
-                    } else {
-                        DatabaseReference friendsRef = root.child("friends");
-                        friendsRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                friendshiip_state.set(pos,-2);
-                                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    Friend friend = data.getValue(Friend.class);
-                                    String user1 = friend.getUser1();
-                                    String user2 = friend.getUser2();
-                                    if ((user1.equals(uid) && user2.equals(getUserUid())) ||
-                                            (user1.equals(getUserUid()) && user2.equals(uid))) {
-                                        Log.d("FRIENDSHIP", "friendssssss......"+user1+"---"+user2);
-                                        friendshiip_state.set(pos,FRIENDS_STATE);
-                                        break;
-                                    }else {
-                                        friendshiip_state.set(pos,ADD_STATE);
-                                    }
+        final DatabaseReference friendReqRef = root.child("friendRequests");
+        friendReqRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(uid) && dataSnapshot.child(uid).hasChild(getUserUid())) {
+                    addBU.setEnabled(true);
+                    addBU.setText(R.string.cancel_request);
+                    usersList.get(pos).setFriendShipState(CANCEL_REQUEST_STATE);
+                } else if (dataSnapshot.hasChild(getUserUid()) && dataSnapshot.child(getUserUid()).hasChild(uid)) {
+                    addBU.setEnabled(true);
+                    addBU.setText(R.string.accept);
+                    usersList.get(pos).setFriendShipState(ACCEPT_STATE);
+                } else {
+                    DatabaseReference friendsRef = root.child("friends");
+                    friendsRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            usersList.get(pos).setFriendShipState(-2);
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                Friend friend = data.getValue(Friend.class);
+                                String user1 = friend.getUser1();
+                                String user2 = friend.getUser2();
+                                if ((user1.equals(uid) && user2.equals(getUserUid())) ||
+                                        (user1.equals(getUserUid()) && user2.equals(uid))) {
+                                    Log.d("FRIENDSHIP", "friendssssss......"+user1+"---"+user2);
+                                    usersList.get(pos).setFriendShipState(FRIENDS_STATE);
+                                    break;
+                                }else {
+                                    usersList.get(pos).setFriendShipState(ADD_STATE);
                                 }
-                                if (friendshiip_state.get(pos)==FRIENDS_STATE) {
-                                    Log.d("FRIENDSHIP", "friends");
-                                    addBU.setEnabled(true);
-                                    addBU.setText("friends");
-                                }else if (friendshiip_state.get(pos)==ADD_STATE ||dataSnapshot.getChildrenCount()==0){
-                                    friendshiip_state.set(pos,ADD_STATE);
-                                    Log.d("FRIENDSHIP", "add");
-                                    addBU.setEnabled(true);
-                                    addBU.setText("add");
-                                }
-                                Log.d("FRIENDSHIP", "state now "+friendshiip_state);
                             }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                friendshiip_state.set(pos,-1);
-                                Log.d("FRIENDSHIP", "" + databaseError.getMessage());
+                            if (usersList.get(pos).getFriendShipState()==FRIENDS_STATE) {
+                                Log.d("FRIENDSHIP", "friends");
+                                addBU.setEnabled(true);
+                                addBU.setText("friends");
+                            }else if (usersList.get(pos).getFriendShipState()==ADD_STATE ||dataSnapshot.getChildrenCount()==0){
+                                usersList.get(pos).setFriendShipState(ADD_STATE);
+                                addBU.setEnabled(true);
+                                addBU.setText("add");
                             }
-                        });
-                    }
-                }
+                        }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("FRIENDSHIP", "" + databaseError.getMessage());
-                    friendshiip_state.set(pos,-1);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            usersList.get(pos).setFriendShipState(-1);
+                            Log.d("FRIENDSHIP", "" + databaseError.getMessage());
+                        }
+                    });
                 }
-            });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("FRIENDSHIP", "" + databaseError.getMessage());
+                usersList.get(pos).setFriendShipState(-1);
+            }
+        });
         }
 
     private void addFriend(String uid){
