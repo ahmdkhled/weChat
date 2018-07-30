@@ -56,7 +56,8 @@
             android:parentActivityName=".activities.SettingActivity"
             android:theme="@style/UsersListTheme" />
         <activity android:name=".activities.SettingActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity android:name=".activities.FriendsActivity"
             android:parentActivityName=".activities.SettingActivity"/>
     </application>

@@ -1,6 +1,7 @@
 package com.ahmdkhled.wechat.activities;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -75,35 +77,63 @@ public class UsersActivity extends AppCompatActivity implements UsersAdapter.OnI
     }
 
     void getUsers(){
-        DatabaseReference users=root.child("users");
-        users.addValueEventListener(new ValueEventListener() {
+        DatabaseReference usersRef=root.child("users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                usersList.clear();
+
                 for (DataSnapshot data:dataSnapshot.getChildren()){
-                    String uid=data.getKey();
-                    if (!uid.equals(getCurrentUserUid())){
-                        User user=data.getValue(User.class);
-                        user.setUid(uid);
-                        usersList.add(user);
-                        usersAdapter.notifyDataSetChanged();
-                    }
+                    final String uid=data.getKey();
+                    final User user=data.getValue(User.class);
+                    DatabaseReference friends =root.child("friends");
+                    friends.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            boolean isFriends=false;
+                            for (DataSnapshot data1 : dataSnapshot.getChildren()) {
+                                Friend friend = data1.getValue(Friend.class);
+                                String user1 = friend.getUser1();
+                                String user2 = friend.getUser2();
+                                if ((user1.equals(uid) && user2.equals(getCurrentUserUid())) ||
+                                        (user1.equals(getCurrentUserUid()) && user2.equals(uid))) {
+                                            isFriends=true;
+                                }
+                            }
+                            if (!isFriends&&!uid.equals(getCurrentUserUid())){
+                                Log.d("CONSS",uid);
+                                user.setUid(uid);
+                                usersList.add(user);
+                                usersAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_SHORT).show();
+
             }
         });
         showUsers(usersList);
     }
 
 
+
+
     private void showUsers(ArrayList<User> usersList) {
         usersAdapter=new UsersAdapter(this,usersList,this);
         usersRecycler.setAdapter(usersAdapter);
+        if (getResources().getConfiguration().orientation==Configuration.ORIENTATION_PORTRAIT){
         usersRecycler.setLayoutManager(new GridLayoutManager(this,2));
+        }else if (getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE){
+            usersRecycler.setLayoutManager(new GridLayoutManager(this,3));
+        }
 
     }
 
@@ -129,14 +159,10 @@ public class UsersActivity extends AppCompatActivity implements UsersAdapter.OnI
         return users;
     }
 
-
-    @Override
-    public void onAddClicked(int pos) {
-
-    }
-
     @Override
     public void onItemClicked(int pos) {
         showProfile(usersList.get(pos).getUid());
     }
+
+
 }
