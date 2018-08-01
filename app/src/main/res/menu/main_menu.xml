@@ -6,12 +6,9 @@
         android:id="@+id/settings"
         android:title="@string/settings"
         app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_settings_black_24dp"
         />
-    <item
-        android:id="@+id/logOut"
-        android:title="@string/log_out"
-        app:showAsAction="ifRoom"
-        />
+
 
 
 

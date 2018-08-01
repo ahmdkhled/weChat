@@ -7,10 +7,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ahmdkhled.wechat.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingActivity extends AppCompatActivity {
 
-    TextView findFriends,friends;
+    TextView findFriends,friends,logOut;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +19,7 @@ public class SettingActivity extends AppCompatActivity {
 
         findFriends=findViewById(R.id.findFriends);
         friends=findViewById(R.id.friends);
+        logOut=findViewById(R.id.logOut);
 
         findFriends.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,5 +35,13 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(),SignupActivity.class));
+                finish();
+            }
+        });
     }
 }
