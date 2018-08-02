@@ -114,6 +114,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                 postsList.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()) {
                     final Post post = data.getValue(Post.class);
+                    post.setPostUid(data.getKey());
                     DatabaseReference friendsRef = root.child("friends");
                     friendsRef.addValueEventListener(new ValueEventListener() {
                         @Override

@@ -1,6 +1,8 @@
 package com.ahmdkhled.wechat.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,7 +20,6 @@ import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
 import com.ahmdkhled.wechat.utils.Utils;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.util.Util;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -28,9 +29,18 @@ import com.google.android.gms.ads.formats.NativeAppInstallAd;
 import com.google.android.gms.ads.formats.NativeAppInstallAdView;
 import com.google.android.gms.ads.formats.NativeContentAd;
 import com.google.android.gms.ads.formats.NativeContentAdView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Ahmed Khaled on 6/3/2018.
@@ -45,7 +55,10 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final int POSTS_TYPE=1;
     private static final int AD_TYPE=2;
     private  String adUnitId="";
-    int adEach=10;
+    private int adEach=10;
+    private DatabaseReference root;
+    private static final int LIKED_STATE=1;
+    private static final int UNLIKED_STATE=2;
 
 
     public PostsAdapter(Context context,ArrayList<Post> posts,OnPostCLicked onPostCLicked) {
@@ -53,6 +66,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         this.context = context;
         this.onPostCLicked = onPostCLicked;
         adUnitId=context.getResources().getString(R.string.adunit_id);
+        root = FirebaseDatabase.getInstance().getReference().getRoot();
     }
 
 
@@ -72,8 +86,8 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position)==POSTS_TYPE){
             PostHolder postHolder= (PostHolder) holder;
-            int pos=mapPostition(position);
-            postHolder.populateData(pos);
+            int pos= mapPosition(position);
+            postHolder.populateData(pos,postHolder);
         }else{
             loadAd(holder);
         }
@@ -105,7 +119,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         return position == adEach * num + (num - 1);
     }
 
-    private int mapPostition(int position){
+    private int mapPosition(int position){
         int adNum=position/adEach;
         int prevNum=adNum-1;
         int nextNum=adNum+1;
@@ -125,11 +139,14 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     class PostHolder extends RecyclerView.ViewHolder{
         TextView postContent,author;
         ImageView profileImg;
+        Button like,comment;
         PostHolder(View itemView) {
             super(itemView);
             postContent=itemView.findViewById(R.id.postContent_TV);
             author=itemView.findViewById(R.id.postAuthor_TV);
             profileImg=itemView.findViewById(R.id.postImg_IV);
+            like=itemView.findViewById(R.id.like_BU);
+            comment=itemView.findViewById(R.id.comment_BU);
 
             author.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -149,9 +166,25 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }
             });
 
+            like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (posts.get(getAdapterPosition()).getLikeState()==UNLIKED_STATE){
+                        likePost(posts.get(getAdapterPosition()).getPostUid());
+                    }else if (posts.get(getAdapterPosition()).getLikeState()==LIKED_STATE){
+                        unLikePost(posts.get(getAdapterPosition()).getPostUid());
+                    }
+                }
+            });
+
+            comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            });
         }
 
-        void populateData(int position){
+        void populateData(int position,PostHolder holder){
             postContent.setText(posts.get(position).getContent());
             if (posts.get(position).getUser()!=null){
                 User user=posts.get(position).getUser();
@@ -161,9 +194,14 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }else{
                     Glide.with(context).load(user.getProfileImg()).into(profileImg);
                 }
+
             }
+            String postUid=posts.get(position).getPostUid();
+            handleLikeButton(postUid,position,holder);
         }
     }
+
+
 
     class AdHolder extends RecyclerView.ViewHolder{
         NativeContentAdView contentAdView;
@@ -292,6 +330,49 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }).build();
 
         adLoader.loadAd(new AdRequest.Builder().addTestDevice(context.getString(R.string.test_device_hash)).build());
+    }
+
+    private void likePost(String postId){
+        DatabaseReference postRef=root.child("likes")
+                .child(postId).child(getUserUid());
+        Map<String,Object> likeMap=new HashMap<>();
+        likeMap.put("date",-System.currentTimeMillis());
+        postRef.updateChildren(likeMap);
+    }
+    private void unLikePost(String postUid) {
+        DatabaseReference postRef=root.child("likes")
+                .child(postUid);
+        postRef.removeValue();
+    }
+
+    private void handleLikeButton(final String postUid, final int pos, final PostHolder holder){
+        DatabaseReference likesRf=root.child("likes");
+        likesRf.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(postUid)&&dataSnapshot.child(postUid).hasChild(getUserUid())){
+                    holder.like.setTextColor(Color.parseColor("#03A9F4"));
+                    posts.get(pos).setLikeState(LIKED_STATE);
+                    Drawable mDrawable = context.getResources().getDrawable(R.drawable.ic_thumb_up_blue_24dp);
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(mDrawable,null,null,null);
+                }else {
+                    holder.like.setTextColor(Color.parseColor("#FF424242"));
+                    posts.get(pos).setLikeState(UNLIKED_STATE);
+                    Drawable mDrawable = context.getResources().getDrawable(R.drawable.ic_thumb_up_black_24dp);
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(mDrawable,null,null,null);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private String getUserUid(){
+        FirebaseUser currentUser= FirebaseAuth.getInstance().getCurrentUser();
+        return currentUser.getUid();
     }
 
     public interface OnPostCLicked{

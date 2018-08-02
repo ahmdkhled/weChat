@@ -29,8 +29,7 @@ import android.widget.Toast;
 
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
-import com.ahmdkhled.wechat.adapters.FragPostsAdapter;
-import com.ahmdkhled.wechat.adapters.PostsAdapter;
+import com.ahmdkhled.wechat.adapters.ProfilePostsAdapter;
 import com.ahmdkhled.wechat.model.Friend;
 import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
@@ -75,7 +74,7 @@ public class ProfileFrag extends Fragment{
     FirebaseUser currentuser;
     User user;
     ArrayList<Post> postsList;
-    FragPostsAdapter postsAdapter;
+    ProfilePostsAdapter postsAdapter;
     String uid;
     int friendshiip_state=-2;
     boolean isMyProfile=true;
@@ -210,6 +209,7 @@ public class ProfileFrag extends Fragment{
                 postsList.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
                     final Post post=data.getValue(Post.class);
+                    post.setPostUid(data.getKey());
                     if (post.getUid().equals(userUid)){
                         if (isAdded()){
                         DatabaseReference users=root.child("users").child(post.getUid());
@@ -377,12 +377,11 @@ public class ProfileFrag extends Fragment{
 
     void showPosts(ArrayList<Post> posts){
         if (getContext()!=null){
-        postsAdapter=new FragPostsAdapter(posts,getContext());
+        postsAdapter=new ProfilePostsAdapter(posts,getContext());
         postRecycler.setAdapter(postsAdapter);
         postRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         postRecycler.scrollToPosition(pos);
         }
-
     }
 
     private String getUserUid(){

@@ -7,24 +7,25 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
+        android:minHeight="150dp"
         app:cardUseCompatPadding="true"
-        app:cardElevation="1dp">
+        app:cardElevation="5dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="5dp">
-
+            android:layout_height="wrap_content"
+            android:minHeight="150dp"
+            android:background="#fff"
+            >
 
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/postImg_IV"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                tools:src="@drawable/ic_launcher_foreground"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#616161" />
+                tools:src="@color/colorPrimary"
+                />
 
             <TextView
                 android:id="@+id/postAuthor_TV"
@@ -49,6 +50,47 @@
                 app:layout_constraintStart_toStartOf="@+id/postAuthor_TV"
                 app:layout_constraintTop_toBottomOf="@+id/postAuthor_TV"
                 tools:text="@string/thisisasamplepost" />
+
+            <Button
+                android:id="@+id/like_BU"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="#F8F8F8"
+                android:text="Like"
+                android:textAllCaps="false"
+                android:gravity="start|center_vertical"
+                app:layout_constraintEnd_toStartOf="@id/comment_BU"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_thumb_up_black_24dp"
+                android:drawableLeft="@drawable/ic_thumb_up_black_24dp"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:id="@+id/comment_BU"
+                android:text="comment"
+                android:background="#F8F8F8"
+                android:textAllCaps="false"
+                app:layout_constraintStart_toEndOf="@id/like_BU"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:drawablePadding="10dp"
+                android:gravity="start|center_vertical"
+                android:drawableStart="@drawable/ic_mode_comment_black_24dp"
+                android:drawableLeft="@drawable/ic_mode_comment_black_24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/commentsCount"
+                android:text="10 Comments"
+                android:textColor="#212121"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/like_BU"/>
 
         </android.support.constraint.ConstraintLayout>
 

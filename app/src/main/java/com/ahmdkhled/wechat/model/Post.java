@@ -12,7 +12,10 @@ public class Post implements Parcelable{
     private String content;
     private long date;
     private String uid;
+    private String postUid;
     private User user;
+    private int likeState;
+    private int commentsCount;
     public Post(String uid,String content, long date,User user ) {
         this.content = content;
         this.date = date;
@@ -27,6 +30,9 @@ public class Post implements Parcelable{
         content=parcel.readString();
         date=parcel.readLong();
         uid=parcel.readString();
+        postUid=parcel.readString();
+        likeState=parcel.readInt();
+        commentsCount=parcel.readInt();
         user=parcel.readParcelable(User.class.getClassLoader());
     }
 
@@ -60,6 +66,30 @@ public class Post implements Parcelable{
         this.user = user;
     }
 
+    public String getPostUid() {
+        return postUid;
+    }
+
+    public void setPostUid(String postUid) {
+        this.postUid = postUid;
+    }
+
+    public int getLikeState() {
+        return likeState;
+    }
+
+    public void setLikeState(int likeState) {
+        this.likeState = likeState;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -70,6 +100,9 @@ public class Post implements Parcelable{
         parcel.writeString(content);
         parcel.writeLong(date);
         parcel.writeString(uid);
+        parcel.writeString(postUid);
+        parcel.writeInt(likeState);
+        parcel.writeInt(commentsCount);
         parcel.writeParcelable(user,i);
     }
 
