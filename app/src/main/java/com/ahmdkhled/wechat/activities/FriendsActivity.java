@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.ahmdkhled.wechat.R;
@@ -78,13 +79,12 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
 
 
     void getFriends(){
-
         DatabaseReference friendsRef=root.child("friends");
         friendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 friendsList.clear();
-                for (DataSnapshot data:dataSnapshot.getChildren()){
+                for (final DataSnapshot data:dataSnapshot.getChildren()){
                     Friend friend=data.getValue(Friend.class);
                     String friendUid=null;
                     if (friend.getUser1().equals(getCurrentUserUid())){
@@ -94,10 +94,12 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
                     }
                     if (friendUid!=null){
                         DatabaseReference usersRef=root.child("users").child(friendUid);
+                        final String finalFriendUid = friendUid;
                         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User user=dataSnapshot.getValue(User.class);
+                                user.setUid(finalFriendUid);
                                 friendsList.add(user);
                                 usersAdapter.notifyDataSetChanged();
 

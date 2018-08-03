@@ -150,6 +150,7 @@ public class ProfileFrag extends Fragment{
         }
         if (Connection.isConnected(getContext())){
             handleAddButton();
+            //Log.d("FRINDD", ""+uid);
             fetchData(uid);
         }
 
