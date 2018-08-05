@@ -1,6 +1,7 @@
 package com.ahmdkhled.wechat.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.ahmdkhled.wechat.R;
+import com.ahmdkhled.wechat.activities.CommentsActivity;
 import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
 import com.ahmdkhled.wechat.utils.Utils;
@@ -180,6 +182,9 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Intent intent=new Intent(context, CommentsActivity.class);
+                    intent.putExtra(CommentsActivity.POST_UID_KEY,posts.get(getAdapterPosition()).getPostUid());
+                    context.startActivity(intent);
                 }
             });
         }

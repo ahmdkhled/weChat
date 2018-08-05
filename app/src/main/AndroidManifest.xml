@@ -55,11 +55,14 @@
             android:name=".activities.UsersActivity"
             android:parentActivityName=".activities.SettingActivity"
             android:theme="@style/UsersListTheme" />
-        <activity android:name=".activities.SettingActivity"
+        <activity
+            android:name=".activities.SettingActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".activities.MainActivity"/>
-        <activity android:name=".activities.FriendsActivity"
-            android:parentActivityName=".activities.SettingActivity"/>
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.FriendsActivity"
+            android:parentActivityName=".activities.SettingActivity" />
+        <activity android:name=".activities.CommentsActivity"></activity>
     </application>
 
 </manifest>

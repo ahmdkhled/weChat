@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="#fff"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        tools:src="@color/colorAccent"
+        android:id="@+id/commentAuthorImg"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentAuthor"
+        tools:text="Ahmed Khaled"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        app:layout_constraintStart_toEndOf="@id/commentAuthorImg"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentContent"
+        tools:text="this is a sample comment content just for testing"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:fontFamily="casual"
+        app:layout_constraintStart_toStartOf="@id/commentAuthor"
+        app:layout_constraintTop_toBottomOf="@id/commentAuthor"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp" />
+
+</android.support.constraint.ConstraintLayout>
