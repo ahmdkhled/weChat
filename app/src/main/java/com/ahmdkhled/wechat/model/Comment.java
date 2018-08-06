@@ -10,6 +10,7 @@ public class Comment {
     private String authorUid;
     private long date;
     private User user;
+    private int likeState;
 
     public Comment(String uid, String content, String authorUid, long date, User user) {
         this.uid = uid;
@@ -60,6 +61,14 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getLikeState() {
+        return likeState;
+    }
+
+    public void setLikeState(int likeState) {
+        this.likeState = likeState;
     }
 
     @Override

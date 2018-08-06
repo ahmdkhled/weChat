@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="5dp"
@@ -41,5 +42,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:id="@+id/likeComment"
+        android:background="@null"
+        android:text="Like"
+        android:textAllCaps="false"
+        android:textColor="#424242"
+        app:layout_constraintTop_toBottomOf="@id/commentContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias=".6"/>
 
 </android.support.constraint.ConstraintLayout>
