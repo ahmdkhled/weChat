@@ -1,6 +1,7 @@
 package com.ahmdkhled.wechat.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ahmdkhled.wechat.R;
+import com.ahmdkhled.wechat.activities.CommentsActivity;
 import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
 import com.ahmdkhled.wechat.utils.Utils;
@@ -67,13 +69,14 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
 
 
     class PostHolder extends RecyclerView.ViewHolder{
-        TextView postContent,author;
+        TextView postContent,author,commentsCount;
         ImageView profileImg;
         Button like,comment;
         PostHolder(View itemView) {
             super(itemView);
             postContent=itemView.findViewById(R.id.postContent_TV);
             author=itemView.findViewById(R.id.postAuthor_TV);
+            commentsCount=itemView.findViewById(R.id.commentsCount);
             profileImg=itemView.findViewById(R.id.postImg_IV);
             like=itemView.findViewById(R.id.like_BU);
             comment=itemView.findViewById(R.id.comment_BU);
@@ -92,6 +95,9 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
             comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Intent intent=new Intent(context, CommentsActivity.class);
+                    intent.putExtra(CommentsActivity.POST_UID_KEY,posts.get(getAdapterPosition()).getPostUid());
+                    context.startActivity(intent);
                 }
             });
 
@@ -110,6 +116,8 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
                 }
                 String postUid=posts.get(position).getPostUid();
                 handleLikeButton(postUid,position,holder);
+                getCommentsCount(postUid,holder);
+
             }
         }
     }
@@ -126,6 +134,22 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
                 .child(postUid);
         postRef.removeValue();
     }
+
+    private void getCommentsCount(String postUid, final PostHolder holder){
+        DatabaseReference commentsRef=root.child("comments").child(postUid);
+        commentsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                holder.commentsCount.setText(dataSnapshot.getChildrenCount()+" comments");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void handleLikeButton(final String postUid, final int pos, final PostHolder holder){
         DatabaseReference likesRf=root.child("likes");

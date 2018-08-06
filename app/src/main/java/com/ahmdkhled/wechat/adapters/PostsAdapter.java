@@ -139,13 +139,14 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 
     class PostHolder extends RecyclerView.ViewHolder{
-        TextView postContent,author;
+        TextView postContent,author,commentsCount;
         ImageView profileImg;
         Button like,comment;
         PostHolder(View itemView) {
             super(itemView);
             postContent=itemView.findViewById(R.id.postContent_TV);
             author=itemView.findViewById(R.id.postAuthor_TV);
+            commentsCount=itemView.findViewById(R.id.commentsCount);
             profileImg=itemView.findViewById(R.id.postImg_IV);
             like=itemView.findViewById(R.id.like_BU);
             comment=itemView.findViewById(R.id.comment_BU);
@@ -203,6 +204,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
             String postUid=posts.get(position).getPostUid();
             handleLikeButton(postUid,position,holder);
+            getCommentsCount(postUid,holder);
         }
     }
 
@@ -344,10 +346,26 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         likeMap.put("date",-System.currentTimeMillis());
         postRef.updateChildren(likeMap);
     }
+
     private void unLikePost(String postUid) {
         DatabaseReference postRef=root.child("likes")
                 .child(postUid);
         postRef.removeValue();
+    }
+
+    private void getCommentsCount(String postUid, final PostHolder holder){
+        DatabaseReference commentsRef=root.child("comments").child(postUid);
+        commentsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                holder.commentsCount.setText(dataSnapshot.getChildrenCount()+" comments");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void handleLikeButton(final String postUid, final int pos, final PostHolder holder){
