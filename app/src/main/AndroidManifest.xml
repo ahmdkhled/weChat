@@ -62,8 +62,10 @@
         <activity
             android:name=".activities.FriendsActivity"
             android:parentActivityName=".activities.SettingActivity" />
-        <activity android:name=".activities.CommentsActivity"
-            android:parentActivityName=".activities.MainActivity"/>
+        <activity
+            android:name=".activities.CommentsActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity android:name=".activities.ChatActivity"></activity>
     </application>
 
 </manifest>

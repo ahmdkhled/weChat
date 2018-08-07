@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ahmdkhled.wechat.activities.ChatActivity;
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.ProfilePostsAdapter;
@@ -66,7 +67,7 @@ public class ProfileFrag extends Fragment{
     ImageView profileImg;
     TextView nameTV, bioTV;
     CardView addcontainer;
-    Button addBU;
+    Button addBU,message;
     ProgressDialog progressDialog;
     RecyclerView postRecycler;
     AlertDialog alertDialog;
@@ -100,6 +101,7 @@ public class ProfileFrag extends Fragment{
         nameTV =v.findViewById(R.id.profileName_TV);
         bioTV =v.findViewById(R.id.profileBio_TV);
         addBU=v.findViewById(R.id.addFriend_BU);
+        message=v.findViewById(R.id.message_BU);
         addcontainer=v.findViewById(R.id.addContainer);
         postRecycler=v.findViewById(R.id.userPostsRecycler);
         appBarLayout=v.findViewById(R.id.appBarLayout);
@@ -185,8 +187,13 @@ public class ProfileFrag extends Fragment{
             }
         });
 
-
-
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), ChatActivity.class);
+                startActivity(intent);
+            }
+        });
         return v;
     }
 

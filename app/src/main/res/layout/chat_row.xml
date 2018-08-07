@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        tools:src="@color/colorAccent"
+        android:id="@+id/chatImg"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Ahmed Khaled"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:id="@+id/chatUserName"
+        app:layout_constraintStart_toEndOf="@id/chatImg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="this is a sample message for"
+        android:textSize="15sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:id="@+id/chatLastMessage"
+        app:layout_constraintStart_toStartOf="@id/chatUserName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chatUserName"
+      />
+
+</android.support.constraint.ConstraintLayout>
