@@ -61,6 +61,7 @@ public class MessagesListActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
+                            user.setUid(dataSnapshot.getKey());
                             chat.setUser(user);
                             chatList.add(chat);
                             chatAdapter.notifyDataSetChanged();

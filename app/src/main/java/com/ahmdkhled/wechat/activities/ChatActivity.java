@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -59,21 +60,23 @@ public class ChatActivity extends AppCompatActivity {
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String messageContent=writeMesage.getText().toString();
+                String messageContent = writeMesage.getText().toString();
                 writeMesage.setText("");
-                if (chatUid==null){
-                    DatabaseReference chatRef=root.child("chats");
-                    chatUid=chatRef.push().getKey();
-                    chatRef=chatRef.child(chatUid);
-                    HashMap<String,Object> chatMap=new HashMap<>();
-                    chatMap.put("user1",getcurrentUserUid());
-                    chatMap.put("user2",receiverUid);
-                    chatRef.updateChildren(chatMap);
-                }
-                    DatabaseReference messagesRef=root.child("messages").child(chatUid).push();
-                    Message message=new Message(messageContent,getcurrentUserUid(),System.currentTimeMillis(),false);
+                if (!TextUtils.isEmpty(messageContent)) {
+                    if (chatUid == null) {
+                        DatabaseReference chatRef = root.child("chats");
+                        chatUid = chatRef.push().getKey();
+                        chatRef = chatRef.child(chatUid);
+                        HashMap<String, Object> chatMap = new HashMap<>();
+                        chatMap.put("user1", getcurrentUserUid());
+                        chatMap.put("user2", receiverUid);
+                        chatRef.updateChildren(chatMap);
+                    }
+                    DatabaseReference messagesRef = root.child("messages").child(chatUid).push();
+                    Message message = new Message(messageContent, getcurrentUserUid(), System.currentTimeMillis(), false);
                     messagesRef.setValue(message);
 
+                }
             }
         });
 
@@ -101,10 +104,10 @@ public class ChatActivity extends AppCompatActivity {
                     messagesRef.addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            Log.d("CHATT",dataSnapshot.toString());
                             Message message=dataSnapshot.getValue(Message.class);
                             messagesList.add(message);
                             messagesAdapter.notifyDataSetChanged();
+                            chatRecycler.smoothScrollToPosition(messagesList.size()-1);
                         }
 
                         @Override
