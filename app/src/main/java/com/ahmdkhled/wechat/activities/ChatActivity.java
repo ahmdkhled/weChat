@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ahmdkhled.wechat.R;
-import com.ahmdkhled.wechat.adapters.ChatAdapter;
-import com.ahmdkhled.wechat.model.Chat;
+import com.ahmdkhled.wechat.adapters.MessagesAdapter;
 import com.ahmdkhled.wechat.model.Message;
-import com.ahmdkhled.wechat.model.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,88 +23,133 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 
 public class ChatActivity extends AppCompatActivity {
 
-    ArrayList<Chat> chatList;
+    EditText writeMesage;
+    ImageView sendMessage;
     RecyclerView chatRecycler;
-    ChatAdapter chatAdapter;
     DatabaseReference root;
+    ArrayList<Message> messagesList;
+    MessagesAdapter messagesAdapter;
+    String chatUid=null;
+    String receiverUid;
+    public static final String  RECEIVER_Uid_TAG="receiver_uid";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        writeMesage=findViewById(R.id.writeMessage);
+        sendMessage=findViewById(R.id.sendMessage);
         chatRecycler=findViewById(R.id.chatRecycler);
-        chatList=new ArrayList<>();
+        messagesList=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().getRoot();
 
-        fetchChats();
+        if (getIntent()!=null&&getIntent().hasExtra(RECEIVER_Uid_TAG)){
+            receiverUid=getIntent().getStringExtra(RECEIVER_Uid_TAG);
+        }else {
+            Toast.makeText(getApplicationContext(),"error",Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        fetchMessages();
+
+        sendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String messageContent=writeMesage.getText().toString();
+                writeMesage.setText("");
+                if (chatUid==null){
+                    DatabaseReference chatRef=root.child("chats");
+                    chatUid=chatRef.push().getKey();
+                    chatRef=chatRef.child(chatUid);
+                    HashMap<String,Object> chatMap=new HashMap<>();
+                    chatMap.put("user1",getcurrentUserUid());
+                    chatMap.put("user2",receiverUid);
+                    chatRef.updateChildren(chatMap);
+                }
+                    DatabaseReference messagesRef=root.child("messages").child(chatUid).push();
+                    Message message=new Message(messageContent,getcurrentUserUid(),System.currentTimeMillis(),false);
+                    messagesRef.setValue(message);
+
+            }
+        });
+
     }
 
-    void fetchChats(){
-        DatabaseReference chatsRef=root.child("chats");
-        chatsRef.addValueEventListener(new ValueEventListener() {
+    private void fetchMessages(){
+        DatabaseReference chatRef=root.child("chats");
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    final Chat chat = new Chat();
-                    chat.setUid(data.getKey());
-                    String user1 = data.child("user1").getValue(String.class);
-                    String user2 = data.child("user2").getValue(String.class);
-                    String chatUser = null;
-                    if (user1.equals(getcurrentUserUid())) {
-                        chatUser = user2;
-                    } else if (user2.equals(getcurrentUserUid())) {
-                        chatUser = user1;
+                for (DataSnapshot data:dataSnapshot.getChildren()){
+                    String user1=data.child("user1").getValue(String.class);
+                    String user2=data.child("user2").getValue(String.class);
+                    if ( (user1.equals(getcurrentUserUid())&&user2.equals(receiverUid))||
+                         (user2.equals(getcurrentUserUid())&&user1.equals(receiverUid)) ){
+                        chatUid=data.getKey();
+                        break;
                     }
-                    if (chatUser != null) {
-                        DatabaseReference userRef = root.child("users").child(chatUser);
-                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Log.d("MSSGS",dataSnapshot.toString());
-                                User user = dataSnapshot.getValue(User.class);
-                                chat.setUser(user);
-                                chatList.add(chat);
-                                chatAdapter.notifyDataSetChanged();
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
-                    }
-                    Query messageRef=root.child("messages").child(chat.getUid())
-                            .limitToFirst(1);
-                    messageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                }
+
+                if (chatUid==null){
+                    Toast.makeText(getApplicationContext(),"you have never messaged .send message now ",Toast.LENGTH_SHORT).show();
+                }else {
+                    Query messagesRef=root.child("messages").child(chatUid).orderByChild("date");
+                    messagesRef.addChildEventListener(new ChildEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            Log.d("CHATT",dataSnapshot.toString());
                             Message message=dataSnapshot.getValue(Message.class);
-                            chat.setLastMessage(message.getContent());
-                            chatAdapter.notifyDataSetChanged();
+                            messagesList.add(message);
+                            messagesAdapter.notifyDataSetChanged();
                         }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+
                         }
                     });
                 }
+
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         });
-        showChats(chatList);
+        populateMessages(messagesList);
     }
 
-    private void showChats(ArrayList<Chat> chatList) {
-        chatAdapter =new ChatAdapter(this,chatList);
-        chatRecycler.setAdapter(chatAdapter);
+    void populateMessages(ArrayList<Message> messagesList){
+        messagesAdapter=new MessagesAdapter(this,messagesList);
+        chatRecycler.setAdapter(messagesAdapter);
         chatRecycler.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     String getcurrentUserUid(){
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
+
 
 
 }

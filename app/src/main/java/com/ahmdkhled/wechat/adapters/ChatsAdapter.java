@@ -20,12 +20,12 @@ import java.util.ArrayList;
  * Created by Ahmed Khaled on 8/6/2018.
  */
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
+public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatHolder>{
 
     private Context context;
     private ArrayList<Chat> chatList;
 
-    public ChatAdapter(Context context, ArrayList<Chat> chatList) {
+    public ChatsAdapter(Context context, ArrayList<Chat> chatList) {
         this.context = context;
         this.chatList = chatList;
     }

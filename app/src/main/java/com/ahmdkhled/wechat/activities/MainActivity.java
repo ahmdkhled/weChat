@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.settings){
             startActivity(new Intent(getApplicationContext(),SettingActivity.class));
+        }else if (item.getItemId()==R.id.startChat){
+            startActivity(new Intent(getApplicationContext(),MessagesListActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

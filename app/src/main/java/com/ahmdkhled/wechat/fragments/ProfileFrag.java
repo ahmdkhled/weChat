@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmdkhled.wechat.activities.ChatActivity;
+import com.ahmdkhled.wechat.activities.MessagesListActivity;
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.ProfilePostsAdapter;
@@ -191,6 +192,7 @@ public class ProfileFrag extends Fragment{
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(getContext(), ChatActivity.class);
+                intent.putExtra(ChatActivity.RECEIVER_Uid_TAG,uid);
                 startActivity(intent);
             }
         });

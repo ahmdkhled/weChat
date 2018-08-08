@@ -8,11 +8,13 @@ public class Message {
 
     private String uid;
     private String content;
+    private String senderUid;
     private long date;
     private boolean seen;
 
-    public Message(String content, long date, boolean seen) {
+    public Message(String content, String senderUid, long date, boolean seen) {
         this.content = content;
+        this.senderUid = senderUid;
         this.date = date;
         this.seen = seen;
     }
@@ -26,6 +28,14 @@ public class Message {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getSenderUid() {
+        return senderUid;
+    }
+
+    public void setSenderUid(String senderUid) {
+        this.senderUid = senderUid;
     }
 
     public String getContent() {
