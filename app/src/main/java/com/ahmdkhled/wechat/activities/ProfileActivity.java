@@ -23,8 +23,6 @@ public class ProfileActivity extends AppCompatActivity {
         if (intent!=null&&intent.hasExtra(PROFILE_UID_TAG)){
             showProfile(intent.getStringExtra(PROFILE_UID_TAG));
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }
 

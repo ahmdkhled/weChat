@@ -2,6 +2,7 @@ package com.ahmdkhled.wechat.fragments;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +15,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +29,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.ahmdkhled.wechat.activities.ChatActivity;
+import com.ahmdkhled.wechat.activities.MainActivity;
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.ProfilePostsAdapter;
@@ -66,7 +69,7 @@ import java.util.Map;
 public class ProfileFrag extends Fragment{
     ImageView profileImg;
     TextView nameTV, bioTV;
-    CardView addcontainer;
+    CardView addcontainer,messagecontainer;
     Button addBU,message;
     ProgressDialog progressDialog;
     RecyclerView postRecycler;
@@ -102,32 +105,38 @@ public class ProfileFrag extends Fragment{
         bioTV =v.findViewById(R.id.profileBio_TV);
         addBU=v.findViewById(R.id.addFriend_BU);
         message=v.findViewById(R.id.message_BU);
-        addcontainer=v.findViewById(R.id.addContainer);
+        addcontainer=v.findViewById(R.id.add_container);
+        messagecontainer=v.findViewById(R.id.message_contianer);
         postRecycler=v.findViewById(R.id.userPostsRecycler);
         appBarLayout=v.findViewById(R.id.appBarLayout);
+        Toolbar toolbar=v.findViewById(R.id.profileToolbar);
         progressDialog =new ProgressDialog(getContext());
         postsList=new ArrayList<>();
+
         root= FirebaseDatabase.getInstance().getReference().getRoot();
         currentuser= FirebaseAuth.getInstance().getCurrentUser();
-
-
 
         Bundle b=getArguments();
         if (b!=null){
              uid=b.getString(ProfileActivity.PROFILE_UID_TAG);
-            if (getUserUid().equals(uid)){
-                addcontainer.setVisibility(View.INVISIBLE);
+            if (getUserUid().equals(uid)){ //my profile
+                addcontainer.setVisibility(View.GONE);
+                messagecontainer.setVisibility(View.GONE);
+                toolbar.setVisibility(View.GONE);
                 bioTV.setEnabled(true);
                 profileImg.setEnabled(true);
-            }else{
+            }else{ // user profile
                 addcontainer.setVisibility(View.VISIBLE);
+                messagecontainer.setVisibility(View.VISIBLE);
                 isMyProfile=false;
                 bioTV.setEnabled(false);
                 profileImg.setEnabled(false);
             }
-        }else{
+        }else{ // my profile
             uid=currentuser.getUid();
-            addcontainer.setVisibility(View.INVISIBLE);
+            addcontainer.setVisibility(View.GONE);
+            messagecontainer.setVisibility(View.GONE);
+            toolbar.setVisibility(View.GONE);
             bioTV.setEnabled(true);
             profileImg.setEnabled(true);
         }
@@ -151,6 +160,15 @@ public class ProfileFrag extends Fragment{
             }
 
         }
+
+        if (getActivity() instanceof ProfileActivity){
+            AppCompatActivity activity=((AppCompatActivity)getActivity());
+            activity.setSupportActionBar(toolbar);
+            activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //activity.getSupportActionBar().setHomeAsUpIndicator();
+        }
+
         if (Connection.isConnected(getContext())){
             handleAddButton();
             fetchData(uid);

@@ -28,7 +28,8 @@
             android:name=".activities.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/signUpTheme" />
-        <activity android:name=".activities.ProfileActivity" />
+        <activity android:name=".activities.ProfileActivity"
+            android:theme="@style/NoActionTheme"/>
 
         <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
@@ -65,8 +66,12 @@
         <activity
             android:name=".activities.CommentsActivity"
             android:parentActivityName=".activities.MainActivity" />
-        <activity android:name=".activities.MessagesListActivity" />
-        <activity android:name=".activities.ChatActivity"></activity>
+        <activity android:name=".activities.MessagesListActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.MainActivity"/>
+        <activity android:name=".activities.ChatActivity"
+            android:parentActivityName=".activities.MessagesListActivity"
+            android:theme="@style/NoActionTheme"/>
     </application>
 
 </manifest>

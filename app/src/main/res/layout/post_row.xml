@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:minHeight="150dp"
         app:cardUseCompatPadding="true"
-        app:cardElevation="5dp">
+        app:cardElevation="2dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -25,37 +25,45 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 tools:src="@color/colorPrimary"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp" />
 
             <TextView
                 android:id="@+id/postAuthor_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/primaryTextColor"
                 app:layout_constraintStart_toEndOf="@+id/postImg_IV"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/ahmedkhaled"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp" />
 
             <TextView
                 android:id="@+id/postContent_TV"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:textColor="#020202"
                 android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/postAuthor_TV"
                 app:layout_constraintTop_toBottomOf="@+id/postAuthor_TV"
-                tools:text="@string/thisisasamplepost" />
+                tools:text="@string/thisisasamplepost"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp" />
 
             <Button
                 android:id="@+id/like_BU"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:background="#F8F8F8"
+                android:background="#FbFbFb"
                 android:text="Like"
                 android:textAllCaps="false"
                 android:gravity="start|center_vertical"
@@ -71,7 +79,7 @@
                 android:layout_height="40dp"
                 android:id="@+id/comment_BU"
                 android:text="comment"
-                android:background="#F8F8F8"
+                android:background="#FbFbFb"
                 android:textAllCaps="false"
                 app:layout_constraintStart_toEndOf="@id/like_BU"
                 app:layout_constraintEnd_toEndOf="parent"
