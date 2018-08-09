@@ -4,10 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ahmdkhled.wechat.R;
@@ -37,6 +39,8 @@ public class ChatActivity extends AppCompatActivity {
     MessagesAdapter messagesAdapter;
     String chatUid=null;
     User user;
+    Toolbar toolbar;
+    TextView toolbarTitle;
     public static final String USER_TAG ="user_tag";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +49,18 @@ public class ChatActivity extends AppCompatActivity {
         writeMesage=findViewById(R.id.writeMessage);
         sendMessage=findViewById(R.id.sendMessage);
         chatRecycler=findViewById(R.id.chatRecycler);
+        toolbar=findViewById(R.id.chatToolbar);
+        toolbarTitle=findViewById(R.id.chatTitle);
         messagesList=new ArrayList<>();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         root= FirebaseDatabase.getInstance().getReference().getRoot();
 
         if (getIntent()!=null&&getIntent().hasExtra(USER_TAG)){
             user =getIntent().getParcelableExtra(USER_TAG);
+            toolbarTitle.setText(user.getName());
+
 
         }else {
             Toast.makeText(getApplicationContext(),"error",Toast.LENGTH_SHORT).show();

@@ -29,7 +29,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/signUpTheme" />
         <activity android:name=".activities.ProfileActivity"
-            android:theme="@style/NoActionTheme"/>
+            android:theme="@style/profileTheme"/>
 
         <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
@@ -71,7 +71,7 @@
             android:parentActivityName=".activities.MainActivity"/>
         <activity android:name=".activities.ChatActivity"
             android:parentActivityName=".activities.MessagesListActivity"
-            android:theme="@style/NoActionTheme"/>
+            android:theme="@style/chatTheme"/>
     </application>
 
 </manifest>
