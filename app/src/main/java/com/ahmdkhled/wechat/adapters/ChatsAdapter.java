@@ -65,7 +65,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatHolder>{
                     String uid =chatList.get(getAdapterPosition()).getUser().getUid();
                     Log.d("CHATT","from adapter is : " +uid);
                     Intent intent=new Intent(context, ChatActivity.class);
-                    intent.putExtra(ChatActivity.RECEIVER_Uid_TAG,uid);
+                    intent.putExtra(ChatActivity.USER_TAG,chatList.get(getAdapterPosition()).getUser());
                     context.startActivity(intent);
                 }
             });

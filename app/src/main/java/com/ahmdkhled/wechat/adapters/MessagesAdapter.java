@@ -3,6 +3,7 @@ package com.ahmdkhled.wechat.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,13 @@ import android.widget.TextView;
 
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.model.Message;
+import com.ahmdkhled.wechat.model.User;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Ahmed Khaled on 8/7/2018.
@@ -22,12 +27,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private Context context;
     private ArrayList<Message> messagesList;
-    public static final int SENT_MESSAGE_TYPE=1;
-    public static final int RECEIVED_MESSAGE_TYPE=2;
+    private User user;
+    private static final int SENT_MESSAGE_TYPE=1;
+    private static final int RECEIVED_MESSAGE_TYPE=2;
 
-    public MessagesAdapter(Context context, ArrayList<Message> messagesList) {
+
+    public MessagesAdapter(Context context, ArrayList<Message> messagesList, User user) {
         this.context = context;
         this.messagesList = messagesList;
+        this.user = user;
     }
 
     @NonNull
@@ -51,6 +59,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else if (getItemViewType(position)==RECEIVED_MESSAGE_TYPE){
             ReceivedMessageHolder receivedMessageHolder= (ReceivedMessageHolder) holder;
             receivedMessageHolder.message.setText(messagesList.get(position).getContent());
+            if (user!=null){
+                if (TextUtils.isEmpty(user.getProfileImg())){
+                    receivedMessageHolder.messageSenderImg.setImageResource(R.drawable.user);
+                }else {
+                    Glide.with(context).load(user.getProfileImg()).into(receivedMessageHolder.messageSenderImg);
+                }
+            }
         }
 
     }
@@ -70,16 +85,18 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     class SentMessageHolder extends RecyclerView.ViewHolder{
         TextView message;
-        public SentMessageHolder(View itemView) {
+        SentMessageHolder(View itemView) {
             super(itemView);
             message=itemView.findViewById(R.id.sentMessage);
         }
     }
     class ReceivedMessageHolder extends RecyclerView.ViewHolder{
         TextView message;
-        public ReceivedMessageHolder(View itemView) {
+        CircleImageView messageSenderImg;
+        ReceivedMessageHolder(View itemView) {
             super(itemView);
             message=itemView.findViewById(R.id.receivedMessage);
+            messageSenderImg=itemView.findViewById(R.id.messageSenderImg);
         }
     }
 
