@@ -18,9 +18,21 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:layout_margin="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/seenImg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/seenImg"
+        tools:src="@color/colorPrimary"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp" />
 
 
 

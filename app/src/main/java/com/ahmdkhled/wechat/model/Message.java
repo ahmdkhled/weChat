@@ -61,4 +61,15 @@ public class Message {
     public void setSeen(boolean seen) {
         this.seen = seen;
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof Message)) return false;
+        Message message= (Message) obj;
+        return  (message.getUid().equals(this.uid));
+    }
+
 }

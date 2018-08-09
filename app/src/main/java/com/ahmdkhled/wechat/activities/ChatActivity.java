@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -110,21 +111,30 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 if (chatUid==null){
-                    Toast.makeText(getApplicationContext(),"you have never messaged .send message now ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"you have never messaged.send message now ",Toast.LENGTH_SHORT).show();
                 }else {
                     Query messagesRef=root.child("messages").child(chatUid).orderByChild("date");
                     messagesRef.addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             Message message=dataSnapshot.getValue(Message.class);
+                            message.setUid(dataSnapshot.getKey());
                             messagesList.add(message);
+                            if (!message.isSeen()&&!message.getSenderUid().equals(getcurrentUserUid())){
+                                message.setSeen(true);
+                                setMessageSeen(message.getUid());
+                            }
                             messagesAdapter.notifyDataSetChanged();
                             chatRecycler.smoothScrollToPosition(messagesList.size()-1);
                         }
 
                         @Override
                         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                            Message message=dataSnapshot.getValue(Message.class);
+                            message.setUid(dataSnapshot.getKey());
+                            int index=messagesList.indexOf(message);
+                            messagesList.get(index).setSeen(message.isSeen());
+                            messagesAdapter.notifyDataSetChanged();
                         }
 
                         @Override
@@ -158,7 +168,12 @@ public class ChatActivity extends AppCompatActivity {
         messagesAdapter=new MessagesAdapter(this,messagesList,user);
         chatRecycler.setAdapter(messagesAdapter);
         chatRecycler.setLayoutManager(new LinearLayoutManager(this));
+    }
 
+    void setMessageSeen(String messageUid){
+        DatabaseReference messageRef=root.child("messages")
+                .child(chatUid).child(messageUid).child("seen");
+        messageRef.setValue(true);
     }
 
     String getcurrentUserUid(){

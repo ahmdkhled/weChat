@@ -13,6 +13,7 @@ import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.model.Message;
 import com.ahmdkhled.wechat.model.User;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -55,19 +56,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position)==SENT_MESSAGE_TYPE){
             SentMessageHolder sentMessageHolder= (SentMessageHolder) holder;
-            sentMessageHolder.message.setText(messagesList.get(position).getContent());
+            sentMessageHolder.populateMessage();
         }else if (getItemViewType(position)==RECEIVED_MESSAGE_TYPE){
             ReceivedMessageHolder receivedMessageHolder= (ReceivedMessageHolder) holder;
-            receivedMessageHolder.message.setText(messagesList.get(position).getContent());
-            if (user!=null){
-                if (TextUtils.isEmpty(user.getProfileImg())){
-                    receivedMessageHolder.messageSenderImg.setImageResource(R.drawable.user);
-                }else {
-                    Glide.with(context).load(user.getProfileImg()).into(receivedMessageHolder.messageSenderImg);
-                }
-            }
+            receivedMessageHolder.populateMessage();
         }
-
     }
 
     @Override
@@ -85,9 +78,20 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     class SentMessageHolder extends RecyclerView.ViewHolder{
         TextView message;
+        CircleImageView seenImg;
         SentMessageHolder(View itemView) {
             super(itemView);
             message=itemView.findViewById(R.id.sentMessage);
+            seenImg=itemView.findViewById(R.id.seenImg);
+        }
+        void populateMessage(){
+            message.setText(messagesList.get(getAdapterPosition()).getContent());
+            if (messagesList.get(getAdapterPosition()).isSeen()&&getAdapterPosition()==messagesList.size()-1){
+                Glide.with(context).load(user.getProfileImg())
+                        .apply(new RequestOptions().override(25,25)
+                        .centerCrop())
+                        .into(seenImg);
+            }
         }
     }
     class ReceivedMessageHolder extends RecyclerView.ViewHolder{
@@ -97,6 +101,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             message=itemView.findViewById(R.id.receivedMessage);
             messageSenderImg=itemView.findViewById(R.id.messageSenderImg);
+        }
+
+        void populateMessage(){
+            message.setText(messagesList.get(getAdapterPosition()).getContent());
+            if (user!=null){
+                if (TextUtils.isEmpty(user.getProfileImg())){
+                    messageSenderImg.setImageResource(R.drawable.user);
+                }else {
+                    Glide.with(context).load(user.getProfileImg()).into(messageSenderImg);
+                }
+            }
         }
     }
 
