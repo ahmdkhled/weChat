@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -108,61 +109,74 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             });
 
         DatabaseReference postsRef=root.child("posts");
-        postsRef.orderByChild("date").addValueEventListener(new ValueEventListener() {
+        postsRef.orderByChild("date").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                postsList.clear();
-                for (DataSnapshot data:dataSnapshot.getChildren()) {
-                    final Post post = data.getValue(Post.class);
-                    post.setPostUid(data.getKey());
-                    DatabaseReference friendsRef = root.child("friends");
-                    friendsRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                Friend friend = data.getValue(Friend.class);
-                                final String user1 = friend.getUser1();
-                                String user2 = friend.getUser2();
-                                if ( (user1.equals(post.getUid()) && user2.equals(getCurrentUserUid()))
-                                        || (user1.equals(getCurrentUserUid()) && user2.equals(post.getUid())) ) {
-                                    postsList.add(post);
-                                    DatabaseReference userRef = root.child("users").child(post.getUid());
-                                    userRef.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            User user = dataSnapshot.getValue(User.class);
-                                            user.setUid(dataSnapshot.getKey());
-                                            post.setUser(user);
-                                            postsAdapter.notifyDataSetChanged();
-                                            postRecycler.scrollToPosition(pos);
+            public void onChildAdded(DataSnapshot data, String s) {
+                final Post post = data.getValue(Post.class);
+                post.setPostUid(data.getKey());
+                DatabaseReference friendsRef = root.child("friends");
+                friendsRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            Friend friend = data.getValue(Friend.class);
+                            final String user1 = friend.getUser1();
+                            String user2 = friend.getUser2();
+                            if ( (user1.equals(post.getUid()) && user2.equals(getCurrentUserUid()))
+                                    || (user1.equals(getCurrentUserUid()) && user2.equals(post.getUid())) ) {
+                                postsList.add(post);
+                                DatabaseReference userRef = root.child("users").child(post.getUid());
+                                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        User user = dataSnapshot.getValue(User.class);
+                                        user.setUid(dataSnapshot.getKey());
+                                        post.setUser(user);
+                                        postsAdapter.notifyDataSetChanged();
+                                        postRecycler.scrollToPosition(pos);
+                                    }
 
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                        }
-                                    });
-                                    break;
-                                }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                });
+                                break;
                             }
-
                         }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                    }
 
-                }
-                showPosts(postsList);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
             }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getContext(),R.string.failled+" "+databaseError.getMessage(),Toast.LENGTH_SHORT).show();
-                Log.d("TAG","error " +databaseError.getMessage());
+
             }
         });
+        showPosts(postsList);
+
     }
+
+
 
     void uploadPost(){
         String post= postContent_ET.getText().toString();
