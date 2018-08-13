@@ -8,12 +8,15 @@ public class Message {
 
     private String uid;
     private String content;
+    private String imageUrl;
     private String senderUid;
     private long date;
     private boolean seen;
 
-    public Message(String content, String senderUid, long date, boolean seen) {
+
+    public Message(String content, String imageUrl, String senderUid, long date, boolean seen) {
         this.content = content;
+        this.imageUrl = imageUrl;
         this.senderUid = senderUid;
         this.date = date;
         this.seen = seen;
@@ -44,6 +47,14 @@ public class Message {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public long getDate() {

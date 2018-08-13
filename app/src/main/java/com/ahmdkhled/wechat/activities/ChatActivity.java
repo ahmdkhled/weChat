@@ -1,5 +1,13 @@
 package com.ahmdkhled.wechat.activities;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +25,9 @@ import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MessagesAdapter;
 import com.ahmdkhled.wechat.model.Message;
 import com.ahmdkhled.wechat.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +36,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +47,7 @@ import java.util.HashMap;
 public class ChatActivity extends AppCompatActivity {
 
     EditText writeMesage;
-    ImageView sendMessage;
+    ImageView sendMessage,importImage;
     RecyclerView chatRecycler;
     DatabaseReference root;
     ArrayList<Message> messagesList;
@@ -42,13 +56,19 @@ public class ChatActivity extends AppCompatActivity {
     User user;
     Toolbar toolbar;
     TextView toolbarTitle;
+    Uri imageUri=null;
     public static final String USER_TAG ="user_tag";
+    private final int PICK_IMAGE_CODE=73;
+    private int STORAGE_PERMISSION_CODE=74;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         writeMesage=findViewById(R.id.writeMessage);
         sendMessage=findViewById(R.id.sendMessage);
+        importImage=findViewById(R.id.importImage);
         chatRecycler=findViewById(R.id.chatRecycler);
         toolbar=findViewById(R.id.chatToolbar);
         toolbarTitle=findViewById(R.id.chatTitle);
@@ -86,10 +106,17 @@ public class ChatActivity extends AppCompatActivity {
                         chatRef.updateChildren(chatMap);
                     }
                     DatabaseReference messagesRef = root.child("messages").child(chatUid).push();
-                    Message message = new Message(messageContent, getcurrentUserUid(), System.currentTimeMillis(), false);
+                    Message message = new Message(messageContent,"", getcurrentUserUid(), System.currentTimeMillis(), false);
                     messagesRef.setValue(message);
 
                 }
+            }
+        });
+
+        importImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                grantPermission();
             }
         });
 
@@ -174,6 +201,89 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference messageRef=root.child("messages")
                 .child(chatUid).child(messageUid).child("seen");
         messageRef.setValue(true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==PICK_IMAGE_CODE &&data!=null){
+            imageUri=data.getData();
+            uploadprofileImg(imageUri);
+            imageUri=null;
+        }
+    }
+
+    void uploadprofileImg(final Uri imageUri){
+        final StorageReference storageRef= FirebaseStorage.getInstance().getReference();
+        storageRef.child("chatImages/"+chatUid+System.currentTimeMillis()).putFile(imageUri)
+                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()){
+                            String url=task.getResult().getDownloadUrl().toString();
+
+                            DatabaseReference messagesRef = root.child("messages").child(chatUid).push();
+                            Message message = new Message("",url, getcurrentUserUid()
+                                    , System.currentTimeMillis(), false);
+                            messagesRef.setValue(message);
+
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("STORAGEEE",""+e.getMessage());
+            }
+        });
+    }
+
+    void pickImage(){
+        Intent intent=new Intent();
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent,PICK_IMAGE_CODE);
+    }
+
+    void grantPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    AlertDialog.Builder alertDialog=new AlertDialog.Builder(this);
+                    alertDialog.setTitle(R.string.Storage_Permission);
+                    alertDialog.setMessage(R.string.permission_body);
+                    alertDialog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+                            }
+                        }
+                    });
+                    alertDialog.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(getApplicationContext(), R.string.ok_thanks,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    alertDialog.show();
+                }else{
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+                }
+            }else {
+                pickImage();
+            }
+        }else {
+            pickImage();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode==STORAGE_PERMISSION_CODE){
+            if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                pickImage();
+            }
+        }
     }
 
     String getcurrentUserUid(){
