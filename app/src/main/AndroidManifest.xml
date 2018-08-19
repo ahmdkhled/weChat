@@ -44,13 +44,6 @@
         <service
             android:name=".widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service
-            android:name=".utils.NotificationService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
 
         <activity
             android:name=".activities.UsersActivity"

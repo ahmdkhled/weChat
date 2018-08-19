@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.fragments.FriendReqFragment;
+import com.ahmdkhled.wechat.fragments.NotificationFragment;
 import com.ahmdkhled.wechat.fragments.PostsFragment;
 import com.ahmdkhled.wechat.fragments.ProfileFrag;
 
@@ -17,10 +18,9 @@ import com.ahmdkhled.wechat.fragments.ProfileFrag;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
-    Context context;
     private Fragment[] fragments=new Fragment[]
-            {new PostsFragment(),new FriendReqFragment(),new ProfileFrag()};
-    private String[] tabs={"Posts","Friend Req","profile"};
+            {new PostsFragment(),new FriendReqFragment(),new NotificationFragment(),new ProfileFrag()};
+    private String[] tabs={"Posts","Friend Req","notification","profile"};
 
 
     public MainPagerAdapter(FragmentManager fm) {

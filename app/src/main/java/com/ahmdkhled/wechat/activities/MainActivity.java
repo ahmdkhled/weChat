@@ -12,17 +12,10 @@ import android.view.View;
 
 import com.ahmdkhled.wechat.fragments.ConnectivityEvent;
 import com.ahmdkhled.wechat.utils.Connection;
-import com.ahmdkhled.wechat.utils.NotificationService;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MainPagerAdapter;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     FirebaseAnalytics firebaseAnalytics;
-    FirebaseJobDispatcher jobDispatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +37,9 @@ public class MainActivity extends AppCompatActivity {
         MainPagerAdapter pagerAdapter=new MainPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
 
         firebaseAnalytics=FirebaseAnalytics.getInstance(this);
-        startJob();
 
         if (!Connection.isConnected(this)){
             showSnackBar();
@@ -72,18 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void startJob() {
-        jobDispatcher=new FirebaseJobDispatcher(new GooglePlayDriver(this));
-        Job job=jobDispatcher.newJobBuilder()
-                .setService(NotificationService.class)
-                .setTag(getString(R.string.job_tag))
-                .setTrigger(Trigger.executionWindow(12*3600,12*3600))
-                .setLifetime(Lifetime.FOREVER)
-                .setRecurring(true)
-                .build();
 
-        jobDispatcher.mustSchedule(job);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:src="#efebe9"
+        android:scaleType="fitXY"
+        android:id="@+id/sentImageMessage"
+        app:layout_constraintEnd_toStartOf="@id/isSeenImg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="5dp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        tools:src="#006064"
+        android:id="@+id/isSeenImg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp" />
+
+
+</android.support.constraint.ConstraintLayout>
+
+
+
