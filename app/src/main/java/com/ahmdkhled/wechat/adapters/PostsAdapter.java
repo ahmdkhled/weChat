@@ -173,9 +173,9 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 @Override
                 public void onClick(View view) {
                     if (posts.get(getAdapterPosition()).getLikeState()==UNLIKED_STATE){
-                        likePost(posts.get(getAdapterPosition()).getPostUid());
+                        likePost(posts.get(getAdapterPosition()).getUid());
                     }else if (posts.get(getAdapterPosition()).getLikeState()==LIKED_STATE){
-                        unLikePost(posts.get(getAdapterPosition()).getPostUid());
+                        unLikePost(posts.get(getAdapterPosition()).getUid());
                     }
                 }
             });
@@ -202,7 +202,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 }
 
             }
-            String postUid=posts.get(position).getPostUid();
+            String postUid=posts.get(position).getUid();
             handleLikeButton(postUid,position,holder);
             getCommentsCount(postUid,holder);
         }

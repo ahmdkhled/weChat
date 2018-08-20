@@ -85,9 +85,9 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
                 @Override
                 public void onClick(View view) {
                     if (posts.get(getAdapterPosition()).getLikeState()==UNLIKED_STATE){
-                        likePost(posts.get(getAdapterPosition()).getPostUid());
+                        likePost(posts.get(getAdapterPosition()).getUid());
                     }else if (posts.get(getAdapterPosition()).getLikeState()==LIKED_STATE){
-                        unLikePost(posts.get(getAdapterPosition()).getPostUid());
+                        unLikePost(posts.get(getAdapterPosition()).getUid());
                     }
                 }
             });
@@ -96,7 +96,7 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
                 @Override
                 public void onClick(View view) {
                     Intent intent=new Intent(context, CommentsActivity.class);
-                    intent.putExtra(CommentsActivity.POST_KEY,posts.get(getAdapterPosition()).getPostUid());
+                    intent.putExtra(CommentsActivity.POST_KEY,posts.get(getAdapterPosition()).getUid());
                     context.startActivity(intent);
                 }
             });
@@ -114,7 +114,7 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
                 }else{
                     Glide.with(context).load(user.getProfileImg()).into(profileImg);
                 }
-                String postUid=posts.get(position).getPostUid();
+                String postUid=posts.get(position).getUid();
                 handleLikeButton(postUid,position,holder);
                 getCommentsCount(postUid,holder);
 

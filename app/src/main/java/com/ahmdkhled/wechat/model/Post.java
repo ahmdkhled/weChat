@@ -11,16 +11,22 @@ public class Post implements Parcelable{
 
     private String content;
     private long date;
+    private String authorUid;
     private String uid;
-    private String postUid;
     private User user;
     private int likeState;
     private int commentsCount;
-    public Post(String uid,String content, long date,User user ) {
+    public Post(String authorUid, String content, long date, User user ) {
         this.content = content;
         this.date = date;
-        this.uid = uid;
+        this.authorUid = authorUid;
         this.user = user;
+    }
+
+    public Post(String content, long date, String authorUid) {
+        this.content = content;
+        this.date = date;
+        this.authorUid = authorUid;
     }
 
     public Post() {
@@ -29,8 +35,8 @@ public class Post implements Parcelable{
     public Post(Parcel parcel) {
         content=parcel.readString();
         date=parcel.readLong();
-        uid=parcel.readString();
-        postUid=parcel.readString();
+        authorUid =parcel.readString();
+        uid =parcel.readString();
         likeState=parcel.readInt();
         commentsCount=parcel.readInt();
         user=parcel.readParcelable(User.class.getClassLoader());
@@ -46,12 +52,12 @@ public class Post implements Parcelable{
 
     public long getDate() {return date;}
 
-    public String getUid() {
-        return uid;
+    public String getAuthorUid() {
+        return authorUid;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setAuthorUid(String authorUid) {
+        this.authorUid = authorUid;
     }
 
     public void setDate(long date) {
@@ -66,12 +72,12 @@ public class Post implements Parcelable{
         this.user = user;
     }
 
-    public String getPostUid() {
-        return postUid;
+    public String getUid() {
+        return uid;
     }
 
-    public void setPostUid(String postUid) {
-        this.postUid = postUid;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public int getLikeState() {
@@ -99,8 +105,8 @@ public class Post implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(content);
         parcel.writeLong(date);
+        parcel.writeString(authorUid);
         parcel.writeString(uid);
-        parcel.writeString(postUid);
         parcel.writeInt(likeState);
         parcel.writeInt(commentsCount);
         parcel.writeParcelable(user,i);

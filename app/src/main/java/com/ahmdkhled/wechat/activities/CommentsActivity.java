@@ -53,7 +53,7 @@ public class CommentsActivity extends AppCompatActivity {
         root= FirebaseDatabase.getInstance().getReference().getRoot();
         if (getIntent()!=null&&getIntent().hasExtra(POST_KEY)){
             post=getIntent().getParcelableExtra(POST_KEY);
-            fetchComment(post.getPostUid());
+            fetchComment(post.getUid());
         }
 
         submitComment.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +69,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void fetchComment(String postUid){
-        Log.d("COMMENT",post.getUser().getUid()+"   "+post.getUid());
+        Log.d("COMMENT",post.getUser().getUid()+"   "+post.getAuthorUid());
         DatabaseReference postRef=root.child("comments").child(postUid);
         postRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -132,7 +132,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     private void writeComment(String comment){
         DatabaseReference postRef=root.child("comments")
-                .child(post.getPostUid()).push();
+                .child(post.getUid()).push();
         Map<String,Object> commentMap=new HashMap<>();
         commentMap.put("content",comment);
         commentMap.put("authorUid",getCurrentUserUid());
@@ -145,7 +145,7 @@ public class CommentsActivity extends AppCompatActivity {
                             .child(post.getUser().getUid())
                             .push();
                     Notification notification=new Notification(getCurrentUserUid(),
-                            "post comment",post.getPostUid(),System.currentTimeMillis());
+                            "post comment",post.getUid(),System.currentTimeMillis());
                     notificationRef.setValue(notification);
                 }
             }

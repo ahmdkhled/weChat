@@ -113,7 +113,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             @Override
             public void onChildAdded(DataSnapshot data, String s) {
                 final Post post = data.getValue(Post.class);
-                post.setPostUid(data.getKey());
+                post.setUid(data.getKey());
                 DatabaseReference friendsRef = root.child("friends");
                 friendsRef.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -122,10 +122,10 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                             Friend friend = data.getValue(Friend.class);
                             final String user1 = friend.getUser1();
                             String user2 = friend.getUser2();
-                            if ( (user1.equals(post.getUid()) && user2.equals(getCurrentUserUid()))
-                                    || (user1.equals(getCurrentUserUid()) && user2.equals(post.getUid())) ) {
-                                postsList.add(post);
-                                DatabaseReference userRef = root.child("users").child(post.getUid());
+                            if ( (user1.equals(post.getAuthorUid()) && user2.equals(getCurrentUserUid()))
+                                    || (user1.equals(getCurrentUserUid()) && user2.equals(post.getAuthorUid())) ) {
+                                postsList.add(0,post);
+                                DatabaseReference userRef = root.child("users").child(post.getAuthorUid());
                                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -143,9 +143,7 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
                                 break;
                             }
                         }
-
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
@@ -179,20 +177,20 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
 
 
     void uploadPost(){
-        String post= postContent_ET.getText().toString();
+        String postContent= postContent_ET.getText().toString();
         postContent_ET.setText("");
         postContent_ET.clearFocus();
         hideSoftKeyboard(this.getActivity());
-        if (Utils.isEmpty(post)){
+        if (Utils.isEmpty(postContent)){
             Toast.makeText(getContext(), R.string.post_empty,Toast.LENGTH_SHORT).show();
         }else{
             DatabaseReference postsRef=root.child("posts");
             String key=postsRef.push().getKey();
             DatabaseReference postRef=postsRef.child(key);
             Map<String,Object> postMap=new HashMap<>();
-            postMap.put("content",post);
-            postMap.put("date",-System.currentTimeMillis());
-            postMap.put("uid",getCurrentUserUid());
+            postMap.put("content",postContent);
+            postMap.put("date",System.currentTimeMillis());
+            postMap.put("authorUid",getCurrentUserUid());
             postRef.updateChildren(postMap)
             .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

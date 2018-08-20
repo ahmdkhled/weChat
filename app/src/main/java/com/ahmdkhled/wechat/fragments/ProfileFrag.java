@@ -2,7 +2,6 @@ package com.ahmdkhled.wechat.fragments;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ahmdkhled.wechat.activities.ChatActivity;
-import com.ahmdkhled.wechat.activities.MainActivity;
 import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.ProfilePostsAdapter;
@@ -237,10 +235,10 @@ public class ProfileFrag extends Fragment{
                 postsList.clear();
                 for (DataSnapshot data:dataSnapshot.getChildren()){
                     final Post post=data.getValue(Post.class);
-                    post.setPostUid(data.getKey());
-                    if (post.getUid().equals(userUid)){
+                    post.setUid(data.getKey());
+                    if (post.getAuthorUid().equals(userUid)){
                         if (isAdded()){
-                        DatabaseReference users=root.child("users").child(post.getUid());
+                        DatabaseReference users=root.child("users").child(post.getAuthorUid());
                         users.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
