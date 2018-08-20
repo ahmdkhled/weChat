@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="5dp">
+    android:background="#fff"
+    android:padding="2dp">
 
     <ImageView
         android:id="@+id/notificationImg"
         android:layout_width="70dp"
         android:layout_height="70dp"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         tools:src="@color/colorPrimary" />
 
@@ -19,9 +22,13 @@
         android:id="@+id/notificationBody"
         tools:text="this is a sample notification Body"
         android:textSize="20sp"
+        android:fontFamily="serif"
+        android:textColor="#424242"
         app:layout_constraintStart_toEndOf="@id/notificationImg"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp" />
+        android:layout_marginEnd="5dp"
+        />
 
 </android.support.constraint.ConstraintLayout>

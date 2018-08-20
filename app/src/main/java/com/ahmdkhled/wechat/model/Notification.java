@@ -7,13 +7,22 @@ package com.ahmdkhled.wechat.model;
 public class Notification {
 
     private String id;
-    private String Image;
+    private String userUid;
     private String body;
+    private String type;
+    private String targetUid;
+    private long date;
+    private User user;
 
-    public Notification(String id, String image, String body) {
-        this.id = id;
-        Image = image;
-        this.body = body;
+
+    public Notification( String userUid, String type, String targetUid,long date) {
+        this.userUid = userUid;
+        this.type = type;
+        this.targetUid = targetUid;
+        this.date=date;
+    }
+
+    public Notification() {
     }
 
     public String getId() {
@@ -24,12 +33,12 @@ public class Notification {
         this.id = id;
     }
 
-    public String getImage() {
-        return Image;
+    public String getUserUid() {
+        return userUid;
     }
 
-    public void setImage(String image) {
-        Image = image;
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 
     public String getBody() {
@@ -38,5 +47,37 @@ public class Notification {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getTargetUid() {
+        return targetUid;
+    }
+
+    public void setTargetUid(String targetUid) {
+        this.targetUid = targetUid;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

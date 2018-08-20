@@ -1,5 +1,6 @@
 package com.ahmdkhled.wechat.activities;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,7 +14,11 @@ import android.widget.ImageView;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.CommentsAdapter;
 import com.ahmdkhled.wechat.model.Comment;
+import com.ahmdkhled.wechat.model.Notification;
+import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,8 +33,8 @@ import java.util.Map;
 
 public class CommentsActivity extends AppCompatActivity {
 
-    public static final String POST_UID_KEY="post_uid";
-    String postUid;
+    public static final String POST_KEY ="post_key";
+    Post post;
     DatabaseReference root;
     RecyclerView commentsRecycler;
     EditText writeComment;
@@ -46,9 +51,9 @@ public class CommentsActivity extends AppCompatActivity {
         commentsList=new ArrayList<>();
 
         root= FirebaseDatabase.getInstance().getReference().getRoot();
-        if (getIntent()!=null&&getIntent().hasExtra(POST_UID_KEY)){
-            postUid=getIntent().getStringExtra(POST_UID_KEY);
-            fetchComment(postUid);
+        if (getIntent()!=null&&getIntent().hasExtra(POST_KEY)){
+            post=getIntent().getParcelableExtra(POST_KEY);
+            fetchComment(post.getPostUid());
         }
 
         submitComment.setOnClickListener(new View.OnClickListener() {
@@ -64,11 +69,11 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void fetchComment(String postUid){
+        Log.d("COMMENT",post.getUser().getUid()+"   "+post.getUid());
         DatabaseReference postRef=root.child("comments").child(postUid);
         postRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //Log.d("COMMENT",dataSnapshot.toString());
                 final Comment comment=dataSnapshot.getValue(Comment.class);
                 comment.setUid(dataSnapshot.getKey());
                 commentsList.add(comment);
@@ -127,12 +132,24 @@ public class CommentsActivity extends AppCompatActivity {
 
     private void writeComment(String comment){
         DatabaseReference postRef=root.child("comments")
-                .child(postUid).push();
+                .child(post.getPostUid()).push();
         Map<String,Object> commentMap=new HashMap<>();
         commentMap.put("content",comment);
         commentMap.put("authorUid",getCurrentUserUid());
         commentMap.put("date",-System.currentTimeMillis());
-        postRef.updateChildren(commentMap);
+        postRef.updateChildren(commentMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    DatabaseReference notificationRef=root.child("notifications")
+                            .child(post.getUser().getUid())
+                            .push();
+                    Notification notification=new Notification(getCurrentUserUid(),
+                            "post comment",post.getPostUid(),System.currentTimeMillis());
+                    notificationRef.setValue(notification);
+                }
+            }
+        });
     }
 
     void populateComments(){

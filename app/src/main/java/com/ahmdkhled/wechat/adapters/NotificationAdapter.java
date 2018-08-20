@@ -9,10 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.model.Notification;
+import com.ahmdkhled.wechat.model.User;
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -22,12 +27,15 @@ import java.util.ArrayList;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationHolder>{
 
+    private final DatabaseReference root;
     private Context context;
     private ArrayList<Notification> notificationList;
 
     public NotificationAdapter(Context context, ArrayList<Notification> notificationList) {
         this.context = context;
         this.notificationList = notificationList;
+        root= FirebaseDatabase.getInstance().getReference().getRoot();
+
     }
 
     @NonNull
@@ -59,11 +67,45 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         void populateNotification(){
-            notificationBody.setText(notificationList.get(getAdapterPosition()).getBody());
-            if (!TextUtils.isEmpty(notificationList.get(getAdapterPosition()).getImage())){
-                Glide.with(context).load(notificationList.get(getAdapterPosition()).getImage())
-                        .into(notificationImg);
+            final Notification notification=notificationList.get(getAdapterPosition());
+            DatabaseReference usersRef=root.child("users")
+                    .child(notification.getUserUid());
+            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user=dataSnapshot.getValue(User.class);
+                    user.setUid(dataSnapshot.getKey());
+                    notification.setUser(user);
+                    String body=getNotificationBody(user.getName(),notification.getType());
+                    notificationBody.setText(body);
+                    showUserImage(user.getProfileImg());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+        private String getNotificationBody(String name, String type){
+            String body="";
+
+            if (type.equals("post comment")){
+                body=name+" has commented on your post";
+            }
+            return body;
+        }
+
+        private void showUserImage(String imageUrl){
+            if (TextUtils.isEmpty(imageUrl)){
+                notificationImg.setImageResource(R.drawable.user);
+            }else {
+                Glide.with(context).load(imageUrl).into(notificationImg);
             }
         }
     }
+
+
 }
