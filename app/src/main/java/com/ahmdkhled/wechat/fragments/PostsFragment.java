@@ -187,11 +187,8 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
             DatabaseReference postsRef=root.child("posts");
             String key=postsRef.push().getKey();
             DatabaseReference postRef=postsRef.child(key);
-            Map<String,Object> postMap=new HashMap<>();
-            postMap.put("content",postContent);
-            postMap.put("date",System.currentTimeMillis());
-            postMap.put("authorUid",getCurrentUserUid());
-            postRef.updateChildren(postMap)
+            Post post=new Post(postContent,System.currentTimeMillis(),getCurrentUserUid());
+            postRef.setValue(post)
             .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

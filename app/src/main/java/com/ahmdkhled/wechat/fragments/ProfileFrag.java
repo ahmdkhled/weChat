@@ -237,14 +237,13 @@ public class ProfileFrag extends Fragment{
                     final Post post=data.getValue(Post.class);
                     post.setUid(data.getKey());
                     if (post.getAuthorUid().equals(userUid)){
-                        if (isAdded()){
                         DatabaseReference users=root.child("users").child(post.getAuthorUid());
                         users.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User user=dataSnapshot.getValue(User.class);
                                 post.setUser(user);
-                                postsList.add(post);
+                                postsList.add(0,post);
                                 postsAdapter.notifyDataSetChanged();
                                 postRecycler.scrollToPosition(pos);
                             }
@@ -256,7 +255,7 @@ public class ProfileFrag extends Fragment{
                             }
                         });
 
-                    }}
+                    }
                 }
                 showPosts(postsList);
             }

@@ -3,6 +3,8 @@ package com.ahmdkhled.wechat.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
 /**
  * Created by Ahmed Khaled on 6/3/2018.
  */
@@ -15,7 +17,8 @@ public class Post implements Parcelable{
     private String uid;
     private User user;
     private int likeState;
-    private int commentsCount;
+    private long commentsCount;
+
     public Post(String authorUid, String content, long date, User user ) {
         this.content = content;
         this.date = date;
@@ -38,7 +41,7 @@ public class Post implements Parcelable{
         authorUid =parcel.readString();
         uid =parcel.readString();
         likeState=parcel.readInt();
-        commentsCount=parcel.readInt();
+        commentsCount=parcel.readLong();
         user=parcel.readParcelable(User.class.getClassLoader());
     }
 
@@ -80,6 +83,7 @@ public class Post implements Parcelable{
         this.uid = uid;
     }
 
+    @Exclude
     public int getLikeState() {
         return likeState;
     }
@@ -88,11 +92,12 @@ public class Post implements Parcelable{
         this.likeState = likeState;
     }
 
-    public int getCommentsCount() {
+    @Exclude
+    public long getCommentsCount() {
         return commentsCount;
     }
 
-    public void setCommentsCount(int commentsCount) {
+    public void setCommentsCount(long commentsCount) {
         this.commentsCount = commentsCount;
     }
 
@@ -108,7 +113,7 @@ public class Post implements Parcelable{
         parcel.writeString(authorUid);
         parcel.writeString(uid);
         parcel.writeInt(likeState);
-        parcel.writeInt(commentsCount);
+        parcel.writeLong(commentsCount);
         parcel.writeParcelable(user,i);
     }
 

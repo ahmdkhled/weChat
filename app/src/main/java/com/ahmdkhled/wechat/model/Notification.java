@@ -1,5 +1,7 @@
 package com.ahmdkhled.wechat.model;
 
+import java.util.Map;
+
 /**
  * Created by Ahmed Khaled on 8/19/2018.
  */
@@ -10,15 +12,14 @@ public class Notification {
     private String userUid;
     private String body;
     private String type;
-    private String targetUid;
     private long date;
     private User user;
+    private Map<String,Object> target;
 
 
-    public Notification( String userUid, String type, String targetUid,long date) {
+    public Notification( String userUid, String type,long date) {
         this.userUid = userUid;
         this.type = type;
-        this.targetUid = targetUid;
         this.date=date;
     }
 
@@ -57,14 +58,6 @@ public class Notification {
         this.type = type;
     }
 
-    public String getTargetUid() {
-        return targetUid;
-    }
-
-    public void setTargetUid(String targetUid) {
-        this.targetUid = targetUid;
-    }
-
     public long getDate() {
         return date;
     }
@@ -79,5 +72,13 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Map<String, Object> getTarget() {
+        return target;
+    }
+
+    public void setTarget(Map<String, Object> target) {
+        this.target = target;
     }
 }

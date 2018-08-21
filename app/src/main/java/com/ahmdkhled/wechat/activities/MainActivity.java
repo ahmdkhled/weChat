@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.MainPagerAdapter;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         if (!Connection.isConnected(this)){
             showSnackBar();
         }
+        String token= FirebaseInstanceId.getInstance().getToken();
+        Log.d("FCMM", "Refreshed token: " + token);
     }
     void showSnackBar(){
         Snackbar snackbar=Snackbar.make(findViewById(R.id.activityMainContainer)

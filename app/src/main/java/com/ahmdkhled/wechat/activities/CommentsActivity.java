@@ -131,13 +131,14 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void writeComment(String comment){
-        DatabaseReference postRef=root.child("comments")
+        final DatabaseReference commentsRef=root.child("comments")
                 .child(post.getUid()).push();
+        final String key=commentsRef.getKey();
         Map<String,Object> commentMap=new HashMap<>();
         commentMap.put("content",comment);
         commentMap.put("authorUid",getCurrentUserUid());
         commentMap.put("date",-System.currentTimeMillis());
-        postRef.updateChildren(commentMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        commentsRef.updateChildren(commentMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
@@ -145,7 +146,11 @@ public class CommentsActivity extends AppCompatActivity {
                             .child(post.getUser().getUid())
                             .push();
                     Notification notification=new Notification(getCurrentUserUid(),
-                            "post comment",post.getUid(),System.currentTimeMillis());
+                            "post comment",System.currentTimeMillis());
+                    Map<String,Object> targetMap=new HashMap<>();
+                    targetMap.put("postUid",post.getUid());
+                    targetMap.put("commentUid",key);
+                    notification.setTarget(targetMap);
                     notificationRef.setValue(notification);
                 }
             }
