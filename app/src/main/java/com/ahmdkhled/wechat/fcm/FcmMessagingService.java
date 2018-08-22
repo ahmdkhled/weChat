@@ -13,6 +13,6 @@ public class FcmMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d("FCMM","message "+remoteMessage.getData().keySet());
+        Log.d("FCMM","message "+remoteMessage.getNotification().getBody());
     }
 }

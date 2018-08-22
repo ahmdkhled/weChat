@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             showSnackBar();
         }
         String token= FirebaseInstanceId.getInstance().getToken();
-        Log.d("FCMM", "Refreshed token: " + token);
+        Log.d("FCMM", " token: " + token);
     }
     void showSnackBar(){
         Snackbar snackbar=Snackbar.make(findViewById(R.id.activityMainContainer)
