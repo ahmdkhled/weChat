@@ -6,31 +6,42 @@ admin.initializeApp();
 
 
 exports.sendNotification=functions.database.ref('/notifications/{userId}/{notificationId}')
-.onWrite((change, context) => {
- 
+.onCreate((snapshot, context) => {
+
+ 	const senderUid = snapshot.val().userUid;
+ 	const type = snapshot.val().type;
+ 	const postUid = snapshot.val().target.postUid;
+
     const userId = context.params.userId;
     const notificationId = context.params.notificationId;
 
+    var bodyContent="";
 
-
-    admin.database().ref('/users/' + userId).once('value')
+    return admin.database().ref('/users/' + senderUid).once('value')
     .then((snapshot)=> {
   	var token = (snapshot.val() && snapshot.val().notification_token) || 'Anonymous';
+  	var name = (snapshot.val() && snapshot.val().name) || 'Anonymous';
 
 
-  	console.log('userId : '+userId+ ' token : ', token);
+  		if (type==="post comment") {
+ 	
+ 		 bodyContent=name+" has commented on your post "
+ 	}
+
 
   	const payload = {
 
                 notification: {
-                    title: "title",
-                    body: "bodyy"
+                    title: "comment notification",
+                    body: bodyContent
                 }
 };
 
-    return admin.messaging().sendToDevice(token,payload)
+    	console.log('bodyContent : '+bodyContent);
+
+   return admin.messaging().sendToDevice(token,payload)
   .then((response) => {
-    console.log('Successfully sent message:', response);
+    //console.log('Successfully sent message:', response);
     return response;
   }).catch((error)=> {
     console.log('Error sending message:', error);

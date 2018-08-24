@@ -68,5 +68,6 @@
     <string name="notification_channel">reminder notification channel</string>
     <string name="settings">Settings</string>
     <string name="startChat">startChat</string>
+    <string name="channelDescription">notification channel fro delivering push notification</string>
 
 </resources>
