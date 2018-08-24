@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -144,6 +145,8 @@ public class SignupActivity extends AppCompatActivity {
         userMap.put("password", Encryption.encrypt(userId,password));
         userMap.put("profileImg", "");
         userMap.put("bio", "");
+        String token= FirebaseInstanceId.getInstance().getToken();
+        userMap.put("notification_token", token);
         uidRef.updateChildren(userMap)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

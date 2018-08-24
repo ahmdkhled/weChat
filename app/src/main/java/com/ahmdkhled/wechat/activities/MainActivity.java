@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         if (!Connection.isConnected(this)){
             showSnackBar();
         }
-        String token= FirebaseInstanceId.getInstance().getToken();
-        Log.d("FCMM", " token: " + token);
     }
     void showSnackBar(){
         Snackbar snackbar=Snackbar.make(findViewById(R.id.activityMainContainer)
