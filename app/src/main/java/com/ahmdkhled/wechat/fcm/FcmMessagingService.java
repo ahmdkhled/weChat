@@ -2,6 +2,7 @@ package com.ahmdkhled.wechat.fcm;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -25,11 +26,11 @@ public class FcmMessagingService extends FirebaseMessagingService {
     }
 
     void showNotification(String title,String body){
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder nBuilder=new NotificationCompat.Builder(getApplicationContext(),"1");
         nBuilder.setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.received_message_bg)
+                .setSmallIcon(R.drawable.user)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "fcm_channel";
