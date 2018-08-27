@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.model.Friend;
+import com.ahmdkhled.wechat.model.Notification;
 import com.ahmdkhled.wechat.model.User;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -193,7 +194,7 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UserHolder>
         });
         }
 
-    private void addFriend(String uid){
+    private void addFriend(final String uid){
         final DatabaseReference root=FirebaseDatabase.getInstance().getReference().getRoot();
         DatabaseReference uidRef=root.child("friendRequests").child(uid).child(getUserUid());
         Map<String,Object> reqMap =new HashMap<>();
@@ -203,8 +204,20 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UserHolder>
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(context, R.string.request_sent
-                                    ,Toast.LENGTH_SHORT).show();
+                            DatabaseReference notificationRef=root.child("notifications")
+                                    .child(uid).push();
+                            Notification notification=new Notification(getUserUid(),"sent request"
+                                    ,System.currentTimeMillis());
+                            notificationRef.setValue(notification)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                Toast.makeText(context, R.string.request_sent
+                                                        ,Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }
                     }
                 });

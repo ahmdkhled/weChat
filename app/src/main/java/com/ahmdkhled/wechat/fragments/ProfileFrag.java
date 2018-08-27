@@ -33,6 +33,7 @@ import com.ahmdkhled.wechat.activities.ProfileActivity;
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.adapters.ProfilePostsAdapter;
 import com.ahmdkhled.wechat.model.Friend;
+import com.ahmdkhled.wechat.model.Notification;
 import com.ahmdkhled.wechat.model.Post;
 import com.ahmdkhled.wechat.model.User;
 import com.ahmdkhled.wechat.utils.Connection;
@@ -424,8 +425,20 @@ public class ProfileFrag extends Fragment{
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    Toast.makeText(getContext(), R.string.request_sent
-                                            ,Toast.LENGTH_SHORT).show();
+                                    DatabaseReference notificationRef=root.child("notifications")
+                                            .child(uid).push();
+                                    Notification notification=new Notification(getUserUid(),"sent request"
+                                            ,System.currentTimeMillis());
+                                    notificationRef.setValue(notification)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()){
+                                                        Toast.makeText(getContext(), R.string.request_sent
+                                                                ,Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
                                 }
                             }
                         });

@@ -1,5 +1,6 @@
 package com.ahmdkhled.wechat.fcm;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -19,7 +20,7 @@ public class FcmMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d("FCMM","message "+remoteMessage.getNotification().getBody());
+        Log.d("FCMMMM","message "+remoteMessage.getNotification().getBody());
         String title=remoteMessage.getNotification().getTitle();
         String body=remoteMessage.getNotification().getBody();
         showNotification(title,body);
@@ -27,11 +28,7 @@ public class FcmMessagingService extends FirebaseMessagingService {
 
     void showNotification(String title,String body){
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder nBuilder=new NotificationCompat.Builder(getApplicationContext(),"1");
-        nBuilder.setContentTitle(title)
-                .setContentText(body)
-                .setSmallIcon(R.drawable.user)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "fcm_channel";
             String description = getString(R.string.channelDescription);
@@ -40,6 +37,15 @@ public class FcmMessagingService extends FirebaseMessagingService {
             channel.setDescription(description);
             notificationManager.createNotificationChannel(channel);
         }
-        notificationManager.notify(144,nBuilder.build());
+
+        NotificationCompat.Builder nBuilder=new NotificationCompat.Builder(getApplicationContext(),"1");
+        nBuilder.setContentTitle(title)
+                .setContentText(body)
+                .setSmallIcon(R.drawable.sent_message_bg)
+                .setDefaults(Notification.DEFAULT_SOUND);
+
+        if (notificationManager != null) {
+            notificationManager.notify(174,nBuilder.build());
+        }
     }
 }

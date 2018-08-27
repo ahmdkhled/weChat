@@ -10,11 +10,15 @@ exports.sendNotification=functions.database.ref('/notifications/{userId}/{notifi
 
  	const senderUid = snapshot.val().userUid;
  	const type = snapshot.val().type;
- 	const postUid = snapshot.val().target.postUid;
     const userId = context.params.userId;
+
+    if(type==="post comment"){
+        var postUid = snapshot.val().target.postUid;
+        var commentUid = snapshot.val().target.commentUid;
+    }
     const notificationId = context.params.notificationId;
 
-    var bodyContent="";
+
 
     return admin.database().ref('/users/' + userId).once('value')
     .then((snapshot)=> {
@@ -23,20 +27,30 @@ exports.sendNotification=functions.database.ref('/notifications/{userId}/{notifi
         return admin.database().ref('/users/' + senderUid).once('value')
             .then((snapshot)=> {
                 const name = (snapshot.val() && snapshot.val().name) || 'Anonymous';
+                var payload={};
+                var bodyContent="";
 
                 if (type==="post comment") {
-                    bodyContent=name+" has commented on your post "
+                     const bodyContent=name+" has commented on your post "
+                     payload = {
+                        notification: {
+                            title: "comment notification",
+                            body: bodyContent
+                        },data:{
+                            postUid: postUid
+                        }
+                    };
+                }
+                else if (type ==="sent request"){
+                    const bodyContent=name+" sent you friend request "
+                    payload = {
+                        notification: {
+                            title: "friend request",
+                            body: bodyContent
+                        }
+                    };
                 }
 
-                const payload = {
-                    notification: {
-                        title: "comment notification",
-                        body: bodyContent
-                    },data:{
-                        postUid: postUid
-                    }
-                };
-                console.log('bodyContent : '+bodyContent);
 
                 return admin.messaging().sendToDevice(token,payload)
                     .then((response) => {
