@@ -96,7 +96,7 @@ public class ProfilePostsAdapter extends RecyclerView.Adapter<ProfilePostsAdapte
                 @Override
                 public void onClick(View view) {
                     Intent intent=new Intent(context, CommentsActivity.class);
-                    intent.putExtra(CommentsActivity.POST_KEY,posts.get(getAdapterPosition()).getUid());
+                    intent.putExtra(CommentsActivity.POST_KEY,posts.get(getAdapterPosition()));
                     context.startActivity(intent);
                 }
             });
