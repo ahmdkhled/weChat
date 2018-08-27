@@ -46,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
         if (!Connection.isConnected(this)){
             showSnackBar();
         }
+
+        Bundle b=getIntent().getExtras();
+        if (b!=null){
+            String type=b.getString("notificationType");
+            if (type!=null&&type.equals("sent request")){
+                tabLayout.getTabAt(1).select();
+            }
+        }
     }
     void showSnackBar(){
         Snackbar snackbar=Snackbar.make(findViewById(R.id.activityMainContainer)
@@ -63,9 +71,17 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-
-
-
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle b=intent.getExtras();
+        if (b!=null){
+            String type=b.getString("notificationType");
+            if (type!=null&&type.equals("sent request")){
+                tabLayout.getTabAt(1).select();
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

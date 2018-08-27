@@ -35,9 +35,12 @@ exports.sendNotification=functions.database.ref('/notifications/{userId}/{notifi
                      payload = {
                         notification: {
                             title: "comment notification",
-                            body: bodyContent
+                            body: bodyContent,
+                            sound: "default",
+                            click_action: "com.ahmdkhled.wechat.activities.MainActivity"
                         },data:{
-                            postUid: postUid
+                             postUid: postUid,
+                             notificationType:type
                         }
                     };
                 }
@@ -46,7 +49,12 @@ exports.sendNotification=functions.database.ref('/notifications/{userId}/{notifi
                     payload = {
                         notification: {
                             title: "friend request",
-                            body: bodyContent
+                            body: bodyContent,
+                            sound: "default",
+                            click_action: "com.ahmdkhled.wechat.activities.MainActivity"
+                        },
+                        data:{
+                            notificationType:type
                         }
                     };
                 }

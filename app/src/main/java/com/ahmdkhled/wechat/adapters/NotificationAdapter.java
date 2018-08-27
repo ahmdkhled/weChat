@@ -94,6 +94,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             if (type.equals("post comment")){
                 body=name+" has commented on your post";
+            }else if (type.equals("sent request")){
+                body=name+" sent you friend request";
             }
             return body;
         }
