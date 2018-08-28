@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.activities.MainActivity;
+import com.ahmdkhled.wechat.activities.PostActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -36,7 +37,7 @@ public class FcmMessagingService extends FirebaseMessagingService {
             if (data.get("notificationType").equals("post comment")){
                 bundle.putString("postUid",data.get("postUid"));
                 bundle.putString("notificationType",data.get("notificationType"));
-                intent=new Intent(this, MainActivity.class);
+                intent=new Intent(this, PostActivity.class);
                 intent.putExtras(bundle);
             }if (data.get("notificationType").equals("sent request")){
                 bundle.putString("notificationType",data.get("notificationType"));

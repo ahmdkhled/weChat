@@ -204,7 +204,7 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
             String postUid=posts.get(position).getUid();
             handleLikeButton(postUid,position,holder);
-            getCommentsCount(postUid,holder);
+            getCommentsCount(postUid,holder,getAdapterPosition());
         }
     }
 
@@ -349,15 +349,16 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private void unLikePost(String postUid) {
         DatabaseReference postRef=root.child("likes")
-                .child(postUid);
+                .child(postUid).child(getUserUid());
         postRef.removeValue();
     }
 
-    private void getCommentsCount(String postUid, final PostHolder holder){
+    private void getCommentsCount(String postUid, final PostHolder holder, final int pos){
         DatabaseReference commentsRef=root.child("comments").child(postUid);
         commentsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                posts.get(pos).setCommentsCount(dataSnapshot.getChildrenCount());
                 holder.commentsCount.setText(dataSnapshot.getChildrenCount()+" comments");
             }
 

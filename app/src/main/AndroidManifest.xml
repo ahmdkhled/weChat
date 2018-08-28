@@ -23,19 +23,19 @@
         </activity>
         <activity
             android:name=".activities.MainActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop">
             <intent-filter>
-                <action android:name="com.ahmdkhled.wechat.activities.MainActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.ahmdkhled.wechat.activities.MainActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activities.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/signUpTheme" />
-        <activity android:name=".activities.ProfileActivity"
-            android:theme="@style/profileTheme"/>
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:theme="@style/profileTheme" />
 
         <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
@@ -50,18 +50,14 @@
         <service
             android:name=".widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <service
-            android:name=".fcm.FcmInstanceService">
+        <service android:name=".fcm.FcmInstanceService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <service
-            android:name=".fcm.FcmMessagingService">
+        <service android:name=".fcm.FcmMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
@@ -69,9 +65,6 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/sent_message_bg" />
 
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
 
         <activity
             android:name=".activities.UsersActivity"
@@ -87,12 +80,20 @@
         <activity
             android:name=".activities.CommentsActivity"
             android:parentActivityName=".activities.MainActivity" />
-        <activity android:name=".activities.MessagesListActivity"
+        <activity
+            android:name=".activities.MessagesListActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".activities.MainActivity"/>
-        <activity android:name=".activities.ChatActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.ChatActivity"
             android:parentActivityName=".activities.MessagesListActivity"
-            android:theme="@style/chatTheme"/>
+            android:theme="@style/chatTheme" />
+        <activity android:name=".activities.PostActivity">
+            <intent-filter>
+                <action android:name="com.ahmdkhled.wechat.activities.PostActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

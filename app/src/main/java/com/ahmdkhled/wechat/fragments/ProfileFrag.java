@@ -243,6 +243,7 @@ public class ProfileFrag extends Fragment{
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 User user=dataSnapshot.getValue(User.class);
+                                user.setUid(dataSnapshot.getKey());
                                 post.setUser(user);
                                 postsList.add(0,post);
                                 postsAdapter.notifyDataSetChanged();

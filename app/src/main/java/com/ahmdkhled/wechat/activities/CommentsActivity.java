@@ -143,7 +143,7 @@ public class CommentsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
                     DatabaseReference notificationRef=root.child("notifications")
-                            .child(post.getUser().getUid())
+                            .child(post.getAuthorUid())
                             .push();
                     Notification notification=new Notification(getCurrentUserUid(),
                             "post comment",System.currentTimeMillis());

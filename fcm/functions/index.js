@@ -37,9 +37,10 @@ exports.sendNotification=functions.database.ref('/notifications/{userId}/{notifi
                             title: "comment notification",
                             body: bodyContent,
                             sound: "default",
-                            click_action: "com.ahmdkhled.wechat.activities.MainActivity"
+                            click_action: "com.ahmdkhled.wechat.activities.PostActivity"
                         },data:{
                              postUid: postUid,
+                             commentUid: commentUid,
                              notificationType:type
                         }
                     };
