@@ -1,15 +1,20 @@
 package com.ahmdkhled.wechat.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.ahmdkhled.wechat.R;
+import com.ahmdkhled.wechat.activities.MainActivity;
+import com.ahmdkhled.wechat.activities.PostActivity;
 import com.ahmdkhled.wechat.model.Notification;
 import com.ahmdkhled.wechat.model.User;
 import com.bumptech.glide.Glide;
@@ -57,7 +62,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return notificationList.size();
     }
 
-    class NotificationHolder extends RecyclerView.ViewHolder{
+    class NotificationHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView notificationImg;
         TextView notificationBody;
         NotificationHolder(View itemView) {
@@ -86,7 +91,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                 }
             });
-
+            itemView.setOnClickListener(this);
 
         }
         private String getNotificationBody(String name, String type){
@@ -105,6 +110,30 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 notificationImg.setImageResource(R.drawable.user);
             }else {
                 Glide.with(context).load(imageUrl).into(notificationImg);
+            }
+        }
+
+        @Override
+        public void onClick(View view) {
+            Log.d("NNOONP","clicked "+notificationList.get(getAdapterPosition()).getType());
+            String type=notificationList.get(getAdapterPosition()).getType();
+            if (type.equals("post comment")){
+                Intent intent=new Intent(context, PostActivity.class);
+                Bundle b=new Bundle();
+                String postUid= (String) notificationList.get(getAdapterPosition())
+                        .getTarget().get("postUid");
+                b.putString("postUid",postUid);
+                intent.putExtras(b);
+                context.startActivity(intent);
+            }else if (type.equals("sent request")){
+                Intent intent=new Intent(context, MainActivity.class);
+                Bundle b=new Bundle();
+                String senderUid= notificationList.get(getAdapterPosition())
+                        .getUserUid();
+                b.putString("senderUid",senderUid);
+                b.putString("notificationType","sent request");
+                intent.putExtras(b);
+                context.startActivity(intent);
             }
         }
     }
