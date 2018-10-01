@@ -199,7 +199,6 @@ public class FriendReqFragment extends Fragment implements FriendReqAdapter.OnRe
                                         //updateWidget();
                                         Toast.makeText(getContext(),R.string.your_are_friends_now
                                                 ,Toast.LENGTH_SHORT).show();
-                                        EventBus.getDefault().post(new FRAcceptEvent());
                                     }
                                 }
                             });

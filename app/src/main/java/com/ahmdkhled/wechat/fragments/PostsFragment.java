@@ -232,11 +232,6 @@ public class PostsFragment extends Fragment implements PostsAdapter.OnPostCLicke
         fetchData();
     };
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAcceotEvent(FRAcceptEvent frEvent) {
-        fetchData();
-    };
-
     void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(
