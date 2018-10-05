@@ -101,8 +101,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 body=name+" has commented on your post";
             }else if (type.equals("sent request")){
                 body=name+" sent you friend request";
+            }else if (type.equals("comment like")){
+                body=name+" likes you Comment ";
             }
-            return body;
+
+                return body;
         }
 
         private void showUserImage(String imageUrl){

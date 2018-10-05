@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.model.Comment;
+import com.ahmdkhled.wechat.model.Notification;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,13 +36,15 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     private Context context;
     private ArrayList<Comment> commentsList;
+    private String postUid;
     private DatabaseReference root;
     private static final int LIKED_STATE=1;
     private static final int UNLIKED_STATE=2;
 
-    public CommentsAdapter(Context context, ArrayList<Comment> commentsList) {
+    public CommentsAdapter(Context context, ArrayList<Comment> commentsList,String postUid) {
         this.context = context;
         this.commentsList = commentsList;
+        this.postUid=postUid;
         root = FirebaseDatabase.getInstance().getReference().getRoot();
     }
 
@@ -66,7 +71,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         ImageView authorImg;
         TextView author,content;
         Button like;
-        public CommentHolder(View itemView) {
+
+        CommentHolder(View itemView) {
             super(itemView);
             author=itemView.findViewById(R.id.commentAuthor);
             authorImg=itemView.findViewById(R.id.commentAuthorImg);
@@ -77,9 +83,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
                 @Override
                 public void onClick(View view) {
                     if (commentsList.get(getAdapterPosition()).getLikeState()==UNLIKED_STATE){
-                        likeComment(commentsList.get(getAdapterPosition()).getUid());
+                        likeComment(getAdapterPosition());
                     }else if (commentsList.get(getAdapterPosition()).getLikeState()==LIKED_STATE){
-                        unLikeComment(commentsList.get(getAdapterPosition()).getUid());
+                        unLikeComment(getAdapterPosition());
                     }
                 }
             });
@@ -120,17 +126,39 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         });
 
     }
-    private void likeComment(String commentUid){
+
+    private void likeComment(final int pos){
         DatabaseReference commentLikeRef=root.child("commentsLikes")
-                .child(commentUid).child(getUserUid());
+                .child(commentsList.get(pos).getUid())
+                .child(getUserUid());
         HashMap<String,Object> likeMap=new HashMap<>();
         likeMap.put("date",-System.currentTimeMillis());
-        commentLikeRef.updateChildren(likeMap);
+        commentLikeRef.updateChildren(likeMap)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        showNotification(pos);
+                    }
+                });
     }
-    private void unLikeComment(String commentUid){
+    private void unLikeComment(int pos){
         DatabaseReference commentLikeRef=root.child("commentsLikes")
-                .child(commentUid).child(getUserUid());
+                .child(commentsList.get(pos).getUid())
+                .child(getUserUid());
         commentLikeRef.removeValue();
+    }
+
+    private void showNotification(int pos){
+        DatabaseReference notificationRef=root.child("notification")
+                .child(commentsList.get(pos).getAuthorUid());
+        Notification notification=new Notification(getUserUid()
+                ,"comment like",System.currentTimeMillis());
+        HashMap<String,Object> target=new HashMap<>();
+        target.put("postUid",postUid);
+        target.put("commentUid",commentsList.get(pos).getUid());
+        notification.setTarget(target);
+        notificationRef.setValue(notification);
+
     }
 
     private String getUserUid(){
