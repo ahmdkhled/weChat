@@ -158,7 +158,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     void populateComments(){
-        commentsAdapter=new CommentsAdapter(this,commentsList);
+        commentsAdapter=new CommentsAdapter(this,commentsList,post.getUid());
         commentsRecycler.setAdapter(commentsAdapter);
         commentsRecycler.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);

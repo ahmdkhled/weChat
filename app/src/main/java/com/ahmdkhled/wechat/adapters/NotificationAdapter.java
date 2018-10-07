@@ -137,6 +137,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 b.putString("notificationType","sent request");
                 intent.putExtras(b);
                 context.startActivity(intent);
+            }else if (type.equals("comment like")){
+                Intent intent=new Intent(context, PostActivity.class);
+                Bundle b=new Bundle();
+                String postUid= (String) notificationList.get(getAdapterPosition())
+                        .getTarget().get("postUid");
+                b.putString("notificationType","comment like");
+                b.putString("postUid",postUid);
+                intent.putExtras(b);
+                context.startActivity(intent);
             }
         }
     }
