@@ -10,8 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout emailIL,passwordIL;
     EditText emailET,passwordET;
     FirebaseAuth mAuth;
-    ProgressDialog progressDialog;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +44,9 @@ public class LoginActivity extends AppCompatActivity {
         emailET=findViewById(R.id.loginEmail_ET);
         passwordIL=findViewById(R.id.loginPass_IL);
         passwordET=findViewById(R.id.loginPass_ET);
+        progressBar=findViewById(R.id.login_PB);
         mAuth=FirebaseAuth.getInstance();
 
-        progressDialog=new ProgressDialog(this);
 
         gotoSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                 String password=passwordET.getText().toString();
                 validateInput(email,password);
                 if (!Utils.isEmpty(email,password)){
-                showDialog();
+                progressBar.setVisibility(View.VISIBLE);
                 mAuth.signInWithEmailAndPassword(email,password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
+                        progressBar.setVisibility(View.VISIBLE);
                         Toast.makeText(getApplicationContext(),getString(R.string.failed_to_login)+e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -100,12 +100,7 @@ public class LoginActivity extends AppCompatActivity {
             passwordIL.setError(getString(R.string.enter_your_password_please));
         }
     }
-    void showDialog() {
-        progressDialog.setTitle(getString(R.string.please_wait));
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-    }
+
 
     void updateToken(String token){
         DatabaseReference root= FirebaseDatabase.getInstance().getReference().getRoot();
@@ -131,12 +126,4 @@ public class LoginActivity extends AppCompatActivity {
         return null;
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (progressDialog!=null&&progressDialog.isShowing()){
-            progressDialog.dismiss();
-        }
-    }
 }
