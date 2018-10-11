@@ -1,6 +1,5 @@
 package com.ahmdkhled.wechat.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -10,8 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.ahmdkhled.wechat.R;
 import com.ahmdkhled.wechat.utils.Encryption;
 import com.ahmdkhled.wechat.utils.Utils;
@@ -34,7 +33,7 @@ public class SignupActivity extends AppCompatActivity {
     Button signUp, gotoLogin;
     FirebaseAuth mAuth;
     DatabaseReference rootRef;
-    ProgressDialog progressDialog;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +48,9 @@ public class SignupActivity extends AppCompatActivity {
         passwordIL = findViewById(R.id.password_IL);
         signUp = findViewById(R.id.signUp);
         gotoLogin = findViewById(R.id.gotoLogIn_BU);
+        progressBar = findViewById(R.id.signUp_PB);
         mAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseDatabase.getInstance().getReference().getRoot();
-        progressDialog = new ProgressDialog(this);
 
         getSupportActionBar().setElevation(0);
 
@@ -70,7 +69,7 @@ public class SignupActivity extends AppCompatActivity {
                 final String password = passwordET.getText().toString();
                 validateInput(name, email, password);
                 if (!Utils.isEmpty(name, email, password)) {
-                    showDialog();
+                    progressBar.setVisibility(View.VISIBLE);
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -88,7 +87,7 @@ public class SignupActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             Log.d("TAG", e.getMessage());
                             Toast.makeText(getApplicationContext(), R.string.failled+" "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -124,12 +123,7 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    void showDialog() {
-        progressDialog.setTitle(getString(R.string.please_wait));
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-    }
+
 
     void saveUser(String userId, String name, String email, String password) {
         DatabaseReference uidRef = rootRef.child("users").child(userId);
@@ -145,7 +139,7 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.dismiss();
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), R.string.signed_up, Toast.LENGTH_SHORT).show();
                         Intent intent=new Intent(getApplicationContext(),MainActivity.class);
                         startActivity(intent);
