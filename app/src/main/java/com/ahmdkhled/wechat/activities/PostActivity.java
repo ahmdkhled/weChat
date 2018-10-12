@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -179,12 +180,14 @@ public class PostActivity extends AppCompatActivity {
                     if (dataSnapshot.hasChild(PostActivity.this.postUid)&&dataSnapshot.child(PostActivity.this.postUid).hasChild(getUserUid())){
                         likeState=LIKED_STATE;
                         like.setTextColor(Color.parseColor("#03A9F4"));
-                        Drawable mDrawable = getResources().getDrawable(R.drawable.ic_thumb_up_blue_24dp);
+                        //Drawable mDrawable = getResources().getDrawable(R.drawable.ic_thumb_up_blue_24dp);
+                        Drawable mDrawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_thumb_up_blue_24dp);
                         like.setCompoundDrawablesWithIntrinsicBounds(mDrawable,null,null,null);
                     }else {
                         likeState=UNLIKED_STATE;
                         like.setTextColor(Color.parseColor("#FF424242"));
-                        Drawable mDrawable = getResources().getDrawable(R.drawable.ic_thumb_up_black_24dp);
+                        //Drawable mDrawable = getResources().getDrawable(R.drawable.ic_thumb_up_black_24dp);
+                        Drawable mDrawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_thumb_up_black_24dp);
                         like.setCompoundDrawablesWithIntrinsicBounds(mDrawable,null,null,null);
 
                     }
@@ -288,7 +291,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     void populateComments(){
-        commentsAdapter=new CommentsAdapter(this,commentsList);
+        commentsAdapter=new CommentsAdapter(this,commentsList,post.getUid());
         commentsRecycler.setAdapter(commentsAdapter);
         commentsRecycler.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);

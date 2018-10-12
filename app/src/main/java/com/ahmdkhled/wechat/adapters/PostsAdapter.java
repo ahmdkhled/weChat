@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -377,12 +378,14 @@ public class PostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 if (dataSnapshot.hasChild(postUid)&&dataSnapshot.child(postUid).hasChild(getUserUid())){
                     holder.like.setTextColor(Color.parseColor("#03A9F4"));
                     posts.get(pos).setLikeState(LIKED_STATE);
-                    Drawable mDrawable = context.getResources().getDrawable(R.drawable.ic_thumb_up_blue_24dp);
+                    //Drawable mDrawable = context.getResources().getDrawable(R.drawable.ic_thumb_up_blue_24dp);
+                    Drawable mDrawable = ContextCompat.getDrawable(context,R.drawable.ic_thumb_up_blue_24dp);
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(mDrawable,null,null,null);
                 }else {
                     holder.like.setTextColor(Color.parseColor("#FF424242"));
                     posts.get(pos).setLikeState(UNLIKED_STATE);
-                    Drawable mDrawable = context.getResources().getDrawable(R.drawable.ic_thumb_up_black_24dp);
+                    //Drawable mDrawable = context.getResources().getDrawable(R.drawable.ic_thumb_up_black_24dp);
+                    Drawable mDrawable = ContextCompat.getDrawable(context,R.drawable.ic_thumb_up_black_24dp);
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(mDrawable,null,null,null);
                 }
             }

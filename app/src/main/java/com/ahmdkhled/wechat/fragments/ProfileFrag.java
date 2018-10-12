@@ -1,8 +1,6 @@
 package com.ahmdkhled.wechat.fragments;
 
-
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ahmdkhled.wechat.activities.ChatActivity;
@@ -52,11 +51,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +67,7 @@ public class ProfileFrag extends Fragment{
     TextView nameTV, bioTV;
     CardView addcontainer,messagecontainer;
     Button addBU,message;
-    ProgressDialog progressDialog;
+    ProgressBar progressBar;
     RecyclerView postRecycler;
     AlertDialog alertDialog;
     DatabaseReference root;
@@ -109,7 +106,7 @@ public class ProfileFrag extends Fragment{
         postRecycler=v.findViewById(R.id.userPostsRecycler);
         appBarLayout=v.findViewById(R.id.appBarLayout);
         Toolbar toolbar=v.findViewById(R.id.profileToolbar);
-        progressDialog =new ProgressDialog(getContext());
+        progressBar=v.findViewById(R.id.profile_PB);
         postsList=new ArrayList<>();
 
         root= FirebaseDatabase.getInstance().getReference().getRoot();
@@ -535,7 +532,7 @@ public class ProfileFrag extends Fragment{
     }
 
     void uploadprofileImg(final Uri imageUri){
-        showDialog();
+        progressBar.setVisibility(View.VISIBLE);
         final StorageReference storageRef=FirebaseStorage.getInstance().getReference();
         storageRef.child("profileImages/"+uid).putFile(imageUri)
                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -552,7 +549,7 @@ public class ProfileFrag extends Fragment{
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()){
                                         profileImg.setImageURI(imageUri);
-                                        progressDialog.dismiss();
+                                        progressBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), R.string.profile_image_updated,Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -613,13 +610,6 @@ public class ProfileFrag extends Fragment{
         }
     }
 
-    void showDialog(){
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setTitle(getString(R.string.uploading_image));
-        progressDialog.show();
-    }
 
     void showAlertDialog(String bio){
         final DatabaseReference bioRef=root.child("users").child(uid).child("bio");

@@ -36,7 +36,18 @@
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@color/colorAccent" />
+                    tools:src="#ffffff" />
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/profile_PB"
+                    app:layout_constraintTop_toTopOf="@id/profileImg_IV"
+                    app:layout_constraintBottom_toBottomOf="@id/profileImg_IV"
+                    app:layout_constraintStart_toStartOf="@id/profileImg_IV"
+                    app:layout_constraintEnd_toEndOf="@id/profileImg_IV"
+                    android:visibility="gone"
+                    />
 
                 <TextView
                     android:id="@+id/profileName_TV"
