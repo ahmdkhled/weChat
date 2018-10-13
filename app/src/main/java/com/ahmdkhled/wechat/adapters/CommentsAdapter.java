@@ -149,8 +149,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     }
 
     private void showNotification(int pos){
-        DatabaseReference notificationRef=root.child("notification")
-                .child(commentsList.get(pos).getAuthorUid());
+        DatabaseReference notificationRef=root.child("notifications")
+                .child(commentsList.get(pos).getAuthorUid())
+                .push();
         Notification notification=new Notification(getUserUid()
                 ,"comment like",System.currentTimeMillis());
         HashMap<String,Object> target=new HashMap<>();
