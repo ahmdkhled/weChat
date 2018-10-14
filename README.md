@@ -1,5 +1,6 @@
 # WeChat
- we chat is a social media app where users can share posts and add each other
+ we chat is a social media app where users can share posts and message each other 
+ app is based on firenase backend
  
   # screenshots
   
