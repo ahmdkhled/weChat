@@ -50,9 +50,9 @@ public class UsersActivity extends AppCompatActivity implements UsersAdapter.OnI
         root= FirebaseDatabase.getInstance().getReference().getRoot();
 
         getSupportActionBar().setElevation(0);
-        SpannableString s = new SpannableString("Users");
+        SpannableString s = new SpannableString("Friends");
         s.setSpan(new ForegroundColorSpan(Color.parseColor("#000000"))
-                , 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                , 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(s);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
 
