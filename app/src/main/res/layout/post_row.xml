@@ -15,90 +15,91 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="150dp"
             android:background="#fff"
-            >
+            android:minHeight="150dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/postImg_IV"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                tools:src="@color/colorPrimary"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp" />
+                tools:src="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/postAuthor_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/primaryTextColor"
-                app:layout_constraintStart_toEndOf="@+id/postImg_IV"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/ahmedkhaled"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp" />
+                app:layout_constraintStart_toEndOf="@+id/postImg_IV"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/ahmedkhaled" />
 
             <TextView
                 android:id="@+id/postContent_TV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
                 android:textColor="#020202"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/postAuthor_TV"
                 app:layout_constraintTop_toBottomOf="@+id/postAuthor_TV"
-                tools:text="@string/thisisasamplepost"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp" />
+                tools:text="@string/thisisasamplepost" />
 
             <Button
                 android:id="@+id/like_BU"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:background="#FbFbFb"
+                android:drawableStart="@drawable/ic_thumb_up_black_24dp"
+                android:drawableLeft="@drawable/ic_thumb_up_black_24dp"
+                android:drawablePadding="10dp"
+                android:gravity="start|center_vertical"
                 android:text="Like"
                 android:textAllCaps="false"
-                android:gravity="start|center_vertical"
-                app:layout_constraintEnd_toStartOf="@id/comment_BU"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:drawablePadding="10dp"
-                android:drawableStart="@drawable/ic_thumb_up_black_24dp"
-                android:drawableLeft="@drawable/ic_thumb_up_black_24dp"/>
+                app:layout_constraintEnd_toStartOf="@id/comment_BU"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
+                android:id="@+id/comment_BU"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:id="@+id/comment_BU"
-                android:text="comment"
-                android:background="#3bfbfbfb"
-                android:textAllCaps="false"
-                app:layout_constraintStart_toEndOf="@id/like_BU"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="#FbFbFb"
+                android:drawableStart="@drawable/ic_mode_comment_black_24dp"
+                android:drawableLeft="@drawable/ic_mode_comment_black_24dp"
                 android:drawablePadding="10dp"
                 android:gravity="start|center_vertical"
-                android:drawableStart="@drawable/ic_mode_comment_black_24dp"
-                android:drawableLeft="@drawable/ic_mode_comment_black_24dp" />
+                android:text="comment"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/like_BU" />
 
             <TextView
+                android:id="@+id/commentsCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/commentsCount"
-                tools:text="10 Comments"
                 android:textColor="#212121"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/like_BU"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/like_BU"/>
+                tools:text="10 Comments"
+                android:layout_marginBottom="2dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp" />
 
         </android.support.constraint.ConstraintLayout>
 
