@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    tools:context="com.ahmdkhled.wechat.activities.MessagesListActivity">
+    tools:context="com.ahmdkhled.chatto.activities.MessagesListActivity">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

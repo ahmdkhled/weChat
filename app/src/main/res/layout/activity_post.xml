@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    tools:context="com.ahmdkhled.wechat.activities.PostActivity">
+    tools:context="com.ahmdkhled.chatto.activities.PostActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"

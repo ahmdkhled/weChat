@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/signup_bg"
-    tools:context="com.ahmdkhled.wechat.activities.SignupActivity"
+    tools:context="com.ahmdkhled.chatto.activities.SignupActivity"
     >
 
     <ProgressBar

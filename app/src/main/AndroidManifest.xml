@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ahmdkhled.wechat">
+    package="com.ahmdkhled.chatto">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.SignupActivity"
+            android:name="com.ahmdkhled.chatto.activities.SignupActivity"
             android:screenOrientation="portrait"
             android:theme="@style/signUpTheme">
             <intent-filter>
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.ahmdkhled.chatto.activities.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="com.ahmdkhled.wechat.activities.MainActivity" />
@@ -30,14 +30,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="com.ahmdkhled.chatto.activities.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/signUpTheme" />
         <activity
-            android:name=".activities.ProfileActivity"
+            android:name="com.ahmdkhled.chatto.activities.ProfileActivity"
             android:theme="@style/profileTheme" />
 
-        <receiver android:name=".widget.WidgetProvider">
+        <receiver android:name="com.ahmdkhled.chatto.widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -48,14 +48,14 @@
         </receiver>
 
         <service
-            android:name=".widget.WidgetService"
+            android:name="com.ahmdkhled.chatto.widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".fcm.FcmInstanceService">
+        <service android:name="com.ahmdkhled.chatto.fcm.FcmInstanceService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".fcm.FcmMessagingService">
+        <service android:name="com.ahmdkhled.chatto.fcm.FcmMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -67,28 +67,28 @@
 
 
         <activity
-            android:name=".activities.UsersActivity"
-            android:parentActivityName=".activities.SettingActivity"
+            android:name="com.ahmdkhled.chatto.activities.UsersActivity"
+            android:parentActivityName="com.ahmdkhled.chatto.activities.SettingActivity"
             android:theme="@style/UsersListTheme" />
         <activity
-            android:name=".activities.SettingActivity"
+            android:name="com.ahmdkhled.chatto.activities.SettingActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName="com.ahmdkhled.chatto.activities.MainActivity" />
         <activity
-            android:name=".activities.FriendsActivity"
-            android:parentActivityName=".activities.SettingActivity" />
+            android:name="com.ahmdkhled.chatto.activities.FriendsActivity"
+            android:parentActivityName="com.ahmdkhled.chatto.activities.SettingActivity" />
         <activity
-            android:name=".activities.CommentsActivity"
-            android:parentActivityName=".activities.MainActivity" />
+            android:name="com.ahmdkhled.chatto.activities.CommentsActivity"
+            android:parentActivityName="com.ahmdkhled.chatto.activities.MainActivity" />
         <activity
-            android:name=".activities.MessagesListActivity"
+            android:name="com.ahmdkhled.chatto.activities.MessagesListActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName="com.ahmdkhled.chatto.activities.MainActivity" />
         <activity
-            android:name=".activities.ChatActivity"
-            android:parentActivityName=".activities.MessagesListActivity"
+            android:name="com.ahmdkhled.chatto.activities.ChatActivity"
+            android:parentActivityName="com.ahmdkhled.chatto.activities.MessagesListActivity"
             android:theme="@style/chatTheme" />
-        <activity android:name=".activities.PostActivity">
+        <activity android:name="com.ahmdkhled.chatto.activities.PostActivity">
             <intent-filter>
                 <action android:name="com.ahmdkhled.wechat.activities.PostActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -1,18 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        release {
-            keyAlias 'wechat'
-            keyPassword '1234567'
-            storeFile file('../wechat.jks')
-            storePassword '1234567'
-        }
-    }
+
     compileSdkVersion 27
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.ahmdkhled.wechat"
+        applicationId "com.ahmdkhled.chatto"
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
@@ -23,7 +16,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+
         }
     }
 }
@@ -50,19 +43,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 apply plugin: 'com.google.gms.google-services'

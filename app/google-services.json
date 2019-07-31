@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:329114045980:android:0785bd8c6a258994",
+        "android_client_info": {
+          "package_name": "com.ahmdkhled.chatto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "329114045980-688rtqs64lhvfaqi79nbdrk8ktrq953i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAipHWYCNhGPvuxwCtzWX1Dnpt7YZa8bXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "329114045980-688rtqs64lhvfaqi79nbdrk8ktrq953i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:329114045980:android:94c834e904e652ae",
         "android_client_info": {
           "package_name": "com.ahmdkhled.wechat"
@@ -33,20 +62,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "329114045980-688rtqs64lhvfaqi79nbdrk8ktrq953i.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
