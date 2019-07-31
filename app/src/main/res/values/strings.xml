@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WeChat</string>
+    <string name="app_name">Chatto</string>
     <string name="adunit_id">ca-app-pub-3940256099942544/2247696110</string>
     <string name="don_t_have_an_account">don\'t have an account ?</string>
     <string name="signup">SignUp</string>
